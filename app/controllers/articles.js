@@ -143,6 +143,7 @@ module.exports = function(app) {
                 });
             } else {
                 article.rating = req.body.rating || article.rating;
+                req.body.comment.username = req.user.username;
                 if (req.body.comment.link === '') {
                     article.comments.push(req.body.comment)
                 } else {

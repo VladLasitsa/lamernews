@@ -11,7 +11,10 @@ CommentsSchema.add({
     username: String,
     text: String,
     link: String,
-    date: { type: Date, default: Date.now },
+    date: {
+        type: Date,
+        default: Date.now
+    },
     comments: [CommentsSchema]
 });
 

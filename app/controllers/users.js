@@ -37,18 +37,17 @@ module.exports = function(app) {
                 email: 1,
                 articleCount: 1
             }, function(err, user) {
-              if(!err) {
-                return res.send({
-                  status: 'OK',
-                  user: user
-                });
-              }
-              else {
-                res.statusCode = 500;
-                return res.send({
-                    error: 'Server error'
-                });
-              }
+                if (!err) {
+                    return res.send({
+                        status: 'OK',
+                        user: user
+                    });
+                } else {
+                    res.statusCode = 500;
+                    return res.send({
+                        error: 'Server error'
+                    });
+                }
             })
         }
 
