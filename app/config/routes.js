@@ -1,37 +1,56 @@
-var users = require('../controllers/users.js');
-var articles = require('../controllers/articles.js');
 
 module.exports = function(passport, app) {
+    'use strict';
 
+    function isLogged(req, res, next) {
+        if (req.isAuthenticated()) {
+            return next();
+        } else {
+            res.json({
+              status: "ERROR",
+              description: "User is not authentificated"
+            })
+        }
+    }
 
-
-    app.get('/', function(req, res) {
-        res.send('hello world');
+    app.use(function (req, res, next) {
+       res.header('Access-Control-Allow-Credentials', true);
+       next();
     });
 
-    app.get('/register', function(req, res) {
-        res.send("hello");
+    app.get('/api/register', function(req, res) {
+        return res.json({
+            status: "ERROR",
+            description: "This is login exists"
+        });
     });
 
-    app.get('/users', function(req, res) {
-        res.redirect('/users/' + req.user.username);
+    app.get('/api/users', isLogged, function(req, res) {
+        res.redirect('/api/users/' + req.user.username);
     });
 
-    app.post('/register', passport.authenticate('registred', {
-        successRedirect: '/users',
-        failureRedirect: '/register',
+    app.post('/api/register', passport.authenticate('registred', {
+        successRedirect: '/api/users',
+        failureRedirect: '/api/register',
         failureFlash: true
     }));
 
-    app.post('/signup', passport.authenticate('signup', {
-        successRedirect: '/users',
-        failureRedirect: '/signup',
+    app.post('/api/signup', passport.authenticate('signup', {
+        successRedirect: '/api/users',
+        failureRedirect: '/api/signup',
         failureFlash: true
     }));
 
-    app.get('/logout', function(req, res) {
-        req.logout();
-        res.redirect('/');
+    app.get('/api/signup', function(req, res) {
+        return res.json({
+            status: "ERROR",
+            description: "Wrong data"
+        });
+    });
+
+    app.get('/api/logout', function(req, res) {
+         req.logout();
+         res.json({"user" : "logout"});
     });
 
     require('../controllers/users.js')(app);

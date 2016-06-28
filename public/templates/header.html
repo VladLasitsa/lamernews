@@ -1,0 +1,22 @@
+<div class="all-articles">
+  <a class="signin-button" ng-href="#/">
+    <span class="fa fa-list"></span>{{'ALL_ARTICLES' | translate}}</a>
+</div>
+<span class="title">{{'MAIN_TITLE' | translate}}</span>
+<div class="sign-in">
+  <button class="signin-button" ng-click=headerCntr.showSignIn() ng-hide="headerCntr.user">
+    <span class="fa fa-sign-in"></span>{{'SIGN_IN' | translate}}
+  </button>
+
+  <div class="user" ng-show="headerCntr.user">
+    <a ng-href="#/users/{{headerCntr.username}}">{{headerCntr.username}}</a>
+  </div>
+  <button class="signin-button fix" ng-click=headerCntr.logout() ng-show="headerCntr.user">
+    {{'LOGOUT' | translate}}<span class="fa fa-sign-out"></span>
+  </button>
+  <div class="location">
+    <a href="" ng-click="headerCntr.changeLang('en')">EN</a>
+    <div class="separator"></div>
+    <a href="" ng-click="headerCntr.changeLang('ru')">RU</a>
+  </div>
+</div>

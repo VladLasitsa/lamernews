@@ -2,12 +2,16 @@ var ArticleModel = require('../models/Article.js');
 var UserModel = require('../models/User.js');
 
 module.exports = function(app) {
+    'use strict';
 
     function isLogged(req, res, next) {
         if (req.isAuthenticated()) {
             return next();
         } else {
-            res.redirect('/');
+            res.send({
+                status: "ERROR",
+                description: "User is not authentificated"
+            });
         }
     }
 
@@ -47,11 +51,13 @@ module.exports = function(app) {
         });
     }
 
-    app.get('/articles/:startIndex/:count', function(req, res) {
+    app.get('/api/articles/:startIndex/:count', function(req, res) {
         var limit = +req.params.count;
         var startIndex = +req.params.startIndex;
-
-        ArticleModel.find().sort('-' + req.query.sort)
+        var sort = req.query.sort;
+        ArticleModel.find({}, {
+                comments: 0
+            }).sort('-' + sort)
             .skip(startIndex)
             .limit(limit)
             .exec(function(err, articles) {
@@ -60,43 +66,52 @@ module.exports = function(app) {
                         error: 'Server error' + err
                     });
                 } else {
-                    return res.send({
+                    var response = {
                         status: 'OK',
                         articles: articles
-                    })
+                    }
+                    res.json(response);
                 }
             });
     });
 
-    app.get('/articles/:id', function(req, res) {
-        ArticleModel.findById(req.params.id, function(err, article) {
-            if (err) {
-                res.send({
-                    error: 'Articles with this id don\'t exists'
-                });
-            } else {
-                res.send({
+    app.get('/api/articles/:id', function(req, res) {
+        if (req.params.id === 'random') {
+            ArticleModel.find(function(err, articles) {
+                if (err) {
+                    return res.send({
+                        status: "ERROR"
+                    });
+                }
+                var randomNumber = Math.floor(Math.random() * (articles.length));
+                var response = {
                     status: 'OK',
-                    article: article
-                });
-            }
-        });
-    });
+                    article: articles[randomNumber]
+                }
+                res.json(response);
 
-    app.get('/articles/random', function(req, res) {
-        ArticleModel.find(function(err, articles) {
-            if (err) {
-                return res.send("Error");
-            }
-            var randomNumber = Math.floor(Math.random() * (articles.length - 1));
-            return res.send({
-                status: 'OK',
-                article: articles[randomNumber]
             });
-        });
+        } else {
+            ArticleModel.findById(req.params.id, function(err, article) {
+                if (err) {
+                    res.send({
+                        status: "ERROR",
+                        error: 'Articles with this id don\'t exists'
+                    });
+                } else {
+                    var response = {
+                        status: 'OK',
+                        article: article
+                    }
+                    res.json(response);
+                }
+            });
+        }
+
     });
 
-    app.post('/articles', isLogged, function(req, res) {
+
+    app.post('/api/articles', isLogged, function(req, res) {
         var newArticle = new ArticleModel();
         var comments = req.body.comments;
 
@@ -104,7 +119,7 @@ module.exports = function(app) {
         newArticle.title = req.body.title;
         newArticle.link = '/articles/' + newArticle._id;
         newArticle.rating = 0;
-        newArticle.date = new Date();
+        newArticle.date = Date.now();
         newArticle.comments = comments;
 
         newArticle.save(function(err) {
@@ -125,15 +140,16 @@ module.exports = function(app) {
                         }
                     });
                 });
-                return res.send({
+                var response = {
                     status: 'OK',
                     article: newArticle
-                });
+                }
+                return res.json(response);
             }
         });
     });
 
-    app.put('/articles/:id', isLogged, function(req, res) {
+    app.put('/api/articles/:id', isLogged, function(req, res) {
         ArticleModel.findOne({
             '_id': req.params.id
         }, function(err, article) {
@@ -143,30 +159,37 @@ module.exports = function(app) {
                 });
             } else {
                 article.rating = req.body.rating || article.rating;
-                req.body.comment.username = req.user.username;
-                if (req.body.comment.link === '') {
-                    article.comments.push(req.body.comment)
-                } else {
-                    search(article.comments, req.body.comment);
+                console.log(req.user.username);
+
+                if (typeof req.body.comment !== 'undefined') {
+                    req.body.comment.username = req.user.username;
+                    if (req.body.comment.link === '') {
+                        req.body.comment.date = new Date();
+                        article.comments.push(req.body.comment)
+                    } else {
+                        search(article.comments, req.body.comment);
+                    }
+                    incrementCountComments(req.body.comment, req.user.username);
                 }
-                incrementCountComments(req.body.comment, req.user.username);
+
                 article.save(function(err) {
                     if (err) {
                         return res.send({
                             error: 'Error: don\'t update article'
                         });
                     } else {
-                        return res.send({
+                        var response = {
                             status: 'OK',
                             article: article
-                        });
+                        }
+                        return res.json(response);
                     }
                 });
             }
         });
     });
 
-    app.delete('/articles/:id', isLogged, function(req, res) {
+    app.delete('/api/articles/:id', isLogged, function(req, res) {
 
         ArticleModel.findOne({
             '_id': req.params.id
@@ -180,16 +203,20 @@ module.exports = function(app) {
                     article.remove(function(err) {
                         if (err) {
                             return res.send({
+                                status: "ERROR",
                                 error: "Error: don't remove article"
                             });
                         } else {
-                            return res.send({
-                                status: 'OK',
-                            });
+                            var response = {
+                                status: 'OK'
+                            }
+                            return res.json(response);
                         }
                     });
                 } else {
+                    var response = {}
                     return res.send({
+                        status: "ERROR",
                         error: "You don't delete articles, becose you don't her creater"
                     })
                 }

@@ -2,7 +2,7 @@ var localStrategy = require('passport-local').Strategy;
 var User = require('../models/User.js');
 
 module.exports = function(passport) {
-
+    'use strict';
     passport.use('registred', new localStrategy(
         function(username, password, done) {
 
@@ -37,13 +37,23 @@ module.exports = function(passport) {
         }));
 
     passport.use('signup', new localStrategy(function(username, password, done) {
+      console.log(username, password);
         User.findOne({
             'username': username
         }, function(err, user) {
-            if (!user.validPassword(password)) {
-                done(null, false);
+            if (!err && user && !user.validPassword(password)) {
+               return done(null, false);
             }
-            return done(null, user);
+            if(err) {
+              return done(null, false);
+            }
+            if(!user){
+              return done(null, false);
+            }
+
+            else {
+              return done(null, user);
+            }
         });
     }));
 

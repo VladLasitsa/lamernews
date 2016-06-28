@@ -1,0 +1,108 @@
+.profile {
+	width: 100%;
+	display: inline-block;
+}
+
+.profile span {
+	display: block;
+	text-align: center;
+	font-size: 24px;
+	color: #464547;
+	text-transform: uppercase;
+}
+.info-content {
+	background-color: #f9f9f9;
+    padding: 20px;
+    padding-top: 150px;
+    margin: 10px 40px;
+    position: relative;
+}
+.title-info {
+	width: 200px;
+	display: inline-block;
+	color: #a9a9a9;
+}
+.value-info {
+	display: inline-block;
+}
+.text-info {
+	font-size: 18px;
+}
+.row-content {
+	margin-bottom: 10px;
+}
+
+.student-title {
+	position: absolute;
+	top: 15px;
+	/*left: 45px;*/
+	right: 45px;
+	width: 95%;
+}
+
+
+.update-button {
+	height: 30px;
+	line-height: 30px;
+	float: right;
+	font-size: 14px;
+	color: white;
+}
+
+
+.sort-button {
+	height: 30px;
+	line-height: 30px;
+	font-size: 14px;
+	color: white;
+}
+
+.signin-button:hover {
+	background-color: #8cad35;
+}
+
+.cancel-button {
+	height: 30px;
+	line-height: 30px;
+	float: right;
+	font-size: 14px;
+	background-color: rgb(127,127,127);
+}
+.cancel-button:hover {
+	background-color: rgb(100,100,100);
+}
+.student-login {
+	display: inline-block;
+
+}
+.student-title {
+	text-align: center;
+}
+.student-title span {
+	font-size: 24px;
+	color: #a9a9a9;
+	display: inline-block;
+	position: absolute;
+	top:55px;
+	margin-left: 30px;
+}
+
+
+.update-profile {
+	display: block;
+}
+
+.user-icon {
+	width: 100px;
+	height: 100px;
+	border-radius: 50%;
+	background: url(../image/user.png) no-repeat #fff;;
+    background-position: center center;
+    display: inline-block;
+}
+
+.field-input {
+	width: 250px;
+	font-size: 14px;
+	padding: 5px;
+}

@@ -1,0 +1,46 @@
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  position: relative;
+}
+
+a {
+  text-decoration: none;
+}
+
+header {
+  text-align: center;
+  height: 60px;
+  top: 0;
+	left: 0;
+	background-color: #1a9cb0;
+	width: 100%;
+}
+
+.wrapper {
+	min-height: 100%;
+    margin: 0 auto;
+    box-sizing: border-box;
+    background-color: #f0f2f4;
+    position: relative;
+}
+.content {
+  padding: 30px;
+}
+.stab {
+	height: 100px;
+}
+
+footer {
+  height: 40px;
+  background-color: #464547;
+	width: 100%;
+	position: absolute;
+	bottom: 0;
+	color: white;
+	font-size: 24px;
+	line-height: 60px;
+	padding: 0 10px;
+	box-sizing: border-box;
+}

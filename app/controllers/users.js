@@ -1,7 +1,7 @@
 var UserModel = require('../models/User.js');
 
 module.exports = function(app) {
-
+      'use strict';
     function isLogged(req, res, next) {
         if (req.isAuthenticated()) {
             return next();
@@ -10,7 +10,7 @@ module.exports = function(app) {
         }
     }
 
-    app.get('/users/:username', function(req, res) {
+    app.get('/api/users/:username', function(req, res) {
         var name = req.params.username;
         if (req.isAuthenticated()) {
             UserModel.findOne({
@@ -18,13 +18,13 @@ module.exports = function(app) {
             }, function(err, user) {
                 if (!err) {
 
-                    return res.send({
+                    return res.json({
                         status: 'OK',
                         user: user
                     });
                 } else {
                     res.statusCode = 500;
-                    return res.send({
+                    return res.json({
                         error: 'Server error'
                     });
                 }
@@ -34,8 +34,7 @@ module.exports = function(app) {
                 username: name
             }, {
                 username: 1,
-                email: 1,
-                articleCount: 1
+                email: 1
             }, function(err, user) {
                 if (!err) {
                     return res.send({
@@ -53,18 +52,18 @@ module.exports = function(app) {
 
     });
 
-    app.put('/users/:username', isLogged, function(req, res) {
+    app.put('/api/users/:username', isLogged, function(req, res) {
         var name = req.params.username;
         UserModel.findOne({
             'username': name
         }, function(err, user) {
-            if (!err) {
+            if (!err && req.user.username === name) {
                 user.email = req.body.email || user.email;
                 user.save(function(err) {
                     if (err) {
                         return res.send("Error");
                     } else {
-                        return res.send({
+                        return res.json({
                             status: 'OK',
                             user: user
                         });
@@ -81,7 +80,7 @@ module.exports = function(app) {
         });
     });
 
-    app.delete('/users/:username', isLogged, function(req, res) {
+    app.delete('/api/users/:username', isLogged, function(req, res) {
         var name = req.params.username;
         UserModel.findOne({
             'username': name

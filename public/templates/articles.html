@@ -1,0 +1,29 @@
+<div>
+    <div>
+        <span class="sort-title">{{'SORT' | translate}}</span>
+        <div>
+        <button class="signin-button sort-button"
+          ng-click="articlesCntr.sort('date')">{{'DATE' | translate}}</button>
+        <button class="signin-button sort-button"
+          ng-click="articlesCntr.sort('rating')">{{'RATING' | translate}}</button>
+        <a class="signin-button sort-button right"
+          ng-href="#/articles/random">{{'RANDOM_ARTICLE' | translate}}</a>
+        </div>
+    </div>
+    <div class="row" ng-repeat="article in articlesCntr.articles">
+        <div class="article">
+            <div class="article-name">{{article.title}}</div>
+            <div class="article-info">
+                <a ng-href="#/users/{{article.authorusername}}"
+                  class="number-listeners">{{article.authorusername}}</a>
+                <div class="begin">{{article.date}}</div>
+            </div>
+            <div class="registration">
+                <a ng-href="#{{article.link}}">{{'SHOW' | translate}}</a>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="more-courses">
+    <a href="" ng-click="articlesCntr.getMoreArticle()">Больше статей</a>
+</div>

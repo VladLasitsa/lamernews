@@ -1,0 +1,20 @@
+<div ng-show="signInCntr.show">
+    <a class="overlay" ng-click="signInCntr.hide()"></a>
+    <div class="regestration-window">
+        <form class="form">
+            <div class="error" ng-show="signInCntr.error">{{'ERROR' | translate}}</div>
+            <div class="error" ng-show="signInCntr.errorSign">{{'ERROR_SIGN' | translate}}</div>
+            <div class="error" ng-show="signInCntr.errorRegistred">{{'ERROR_REGISTRED' | translate}}</div>
+            <input ng-model="signInCntr.user.login" class="input-field"
+              placeholder="{{'INPUT_LOGIN' | translate}}" type="text">
+            <input ng-model="signInCntr.user.password" ng-model-options="{ getterSetter: true }"
+              class="input-field" placeholder="{{'INPUT_PASSWORD' | translate}}" type="password">
+
+            <button ng-click="signInCntr.signIn()" class="signin-button submit" type="submit">
+              {{'SIGN_IN' | translate}}</button>
+            <div class="or"><span>{{'OR' | translate}}</span></div>
+            <button class="signin-button submit" ng-click="signInCntr.registred()"
+            type="submit">{{'SIGN_UP' | translate}}</button>
+        </form>
+    </div>
+</div>

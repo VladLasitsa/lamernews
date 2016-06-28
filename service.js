@@ -1,3 +1,4 @@
+'use strict';
 var routes = require('./app/config/routes.js');
 
 var express = require('express');
@@ -14,17 +15,22 @@ var cookieParser = require('cookie-parser');
 var flash = require('connect-flash');
 
 app.use(morgan('dev'));
-app.use(bodyParser());
 app.use(cookieParser());
-app.use(flash());
+app.use(bodyParser());
 
-require('./app/config/passport.js')(passport);
+
+app.use('/', express.static(__dirname + '/public'));
+
 
 app.use(session({
     secret: 'secret'
 }));
 app.use(passport.initialize());
 app.use(passport.session());
+app.use(flash());
+
+
+require('./app/config/passport.js')(passport);
 
 require('./app/config/routes.js')(passport, app);
 

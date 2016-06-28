@@ -16,7 +16,7 @@ module.exports = {
     devtool: 'source-map',
 
     resolve: {
-        extensions: ['', '.js']
+        extensions: ['', '.js', '.html', '.css']
     },
 
     module: {
@@ -28,10 +28,14 @@ module.exports = {
         loaders: [{
             test: /\.css$/,
             loader: "style-loader!css-loader"
-        }]
+        }, {
+            test: /\.html$/,
+            loader: "html-loader"
+        }, ]
     },
 
     devServer: {
-        contentBase: __dirname + '/public'
+        contentBase: __dirname + '/public',
+        hot: true
     }
 };
