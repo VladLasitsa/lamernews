@@ -7,14 +7,12 @@ module.exports = function($rootScope, $translate, $scope, usersService, $users) 
     $rootScope.locale = $translate.proposedLanguage();
 
     $rootScope.$on('userSignIn', angular.bind(this, function() {
-        $scope.$apply(angular.bind(this, function() {
             this.username = usersService.getUser();
             this.user = usersService.isLogged();
-        }));
     }));
 
     this.showSignIn = function() {
-        $rootScope.$broadcast('showSignIn');
+        $rootScope.$emit('showSignIn');
     };
 
     this.changeLang = function(locale) {
@@ -25,12 +23,10 @@ module.exports = function($rootScope, $translate, $scope, usersService, $users) 
 
     this.logout = function() {
         $users.logout(angular.bind(this, function(data) {
-            $scope.$apply(angular.bind(this, function() {
                 usersService.setUser('');
                 usersService.logged(false);
                 this.user = usersService.isLogged();
                 $rootScope.$broadcast('logout');
-            }));
         }));
-    }
+    };
 };

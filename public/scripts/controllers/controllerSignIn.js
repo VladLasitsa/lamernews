@@ -17,7 +17,6 @@ module.exports = function($scope, $users, $rootScope, usersService) {
         if (this.user.login !== '' && this.user.password !== '') {
             var req = 'username='+this.user.login+'&password='+this.user.password;
             $users.signIn(req, angular.bind(this, function(data) {
-                $scope.$apply(angular.bind(this, function() {
                   if(angular.equals(data.status, 'OK')){
                     usersService.setUser(data.user.username);
                     usersService.logged(true);
@@ -29,9 +28,8 @@ module.exports = function($scope, $users, $rootScope, usersService) {
                       this.errorRegistred = false;
                       this.user = {};
                   }
-                }));
                 if(!this.show){
-                    $rootScope.$broadcast('userSignIn');
+                    $rootScope.$emit('userSignIn');
                 }
 
             }));
@@ -49,7 +47,6 @@ module.exports = function($scope, $users, $rootScope, usersService) {
         if (!angular.equals(login, '') && !angular.equals(password, '')) {
             var req = 'username='+this.user.login+'&password='+this.user.password;
             $users.createUser(req, angular.bind(this, function(data) {
-                $scope.$apply(angular.bind(this, function() {
                   if(angular.equals(data.status, 'OK')){
                     usersService.setUser(data.user.username);
                     usersService.logged(true);
@@ -61,9 +58,8 @@ module.exports = function($scope, $users, $rootScope, usersService) {
                     this.errorSign = false;
                     this.user = {};
                   }
-                }));
                 if(!this.show){
-                    $rootScope.$broadcast('userSignIn');
+                    $rootScope.$emit('userSignIn');
                 }
             }));
         } else {

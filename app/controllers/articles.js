@@ -120,6 +120,7 @@ module.exports = function(app) {
         newArticle.link = '/articles/' + newArticle._id;
         newArticle.rating = 0;
         newArticle.date = Date.now();
+        newArticle.usersRating = [];
         newArticle.comments = comments;
 
         newArticle.save(function(err) {
@@ -160,6 +161,7 @@ module.exports = function(app) {
             } else {
                 article.rating = req.body.rating || article.rating;
                 console.log(req.user.username);
+                article.usersRating = req.body.usersRating || article.usersRating;
 
                 if (typeof req.body.comment !== 'undefined') {
                     req.body.comment.username = req.user.username;

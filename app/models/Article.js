@@ -25,6 +25,7 @@ var ArticleSchema = new mongoose.Schema({
     link: String,
     rating: Number,
     date: Date,
+    usersRating: [String],
     comments: [CommentsSchema]
 });
 

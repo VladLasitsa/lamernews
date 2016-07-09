@@ -1,4 +1,7 @@
 (function() {
+  //karma and jasmine unit-test
+  //юзать less вместо css
+  //поработать с sql, новую ветку с sql и оставить mongoose
     'use strict';
     var ControllerSignIn = require('./controllers/controllerSignIn');
     var ControllerArticles = require('./controllers/controllerArticles');
@@ -60,7 +63,6 @@
           suffix: '.json'
         });
         $translateProvider.preferredLanguage('en');
-        // $translateProvider.useLocalStorage();
         $urlRouterProvider.otherwise('/articles');
     });
 

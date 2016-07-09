@@ -9,56 +9,44 @@ module.exports = function($scope, $rootScope, $articles, $location, usersService
 
 
     $rootScope.$on('userSignIn', angular.bind(this, function() {
-        $scope.$apply(angular.bind(this, function() {
             this.checkUser = true;
-            this.checkRating = this.checkRatingF();
+            if(this.articleItem.usersRating.length === 0 ||
+              this.articleItem.usersRating.indexOf(usersService.getUser()) === -1) {
+              this.checkRating = true;
+            }
             if (this.articleItem.authorusername === usersService.getUser()) {
                 this.checkArticleOwner = true;
             }
-        }));
     }));
 
     $rootScope.$on('logout', angular.bind(this, function() {
-        $scope.$apply(angular.bind(this, function() {
             this.checkUser = false;
             this.checkRating = false;
             this.checkArticleOwner = false;
-        }));
     }));
 
-    $articles.getArticle($location.path(), angular.bind(this, function(data) {
-        $scope.$apply(angular.bind(this, function() {
+    $articles.getArticle(angular.bind(this, function(data) {
             this.articleItem = {};
             this.date(data.article);
             this.articleItem = data.article;
-            this.checkRating = this.checkRatingF();
+             if(data.article.usersRating.length === 0 ||
+               data.article.usersRating.indexOf(usersService.getUser()) === -1) {
+               this.checkRating = true;
+             }
             if (this.articleItem.authorusername === usersService.getUser()) {
                 this.checkArticleOwner = true;
             }
-        }));
     }));
-
-    this.checkRatingF = function functionName() {
-        if (this.checkUser) {
-            return usersService.rating(this.articleItem._id);
-        } else {
-            return false;
-        }
-    };
-
 
 
     this.remove = function() {
-        $articles.deleteArticle($location.path(),
-            angular.bind(this, function(data) {
-                $scope.$apply(angular.bind(this, function() {
+        $articles.deleteArticle(angular.bind(this, function(data) {
                     if (data.status === 'OK') {
                         this.articleItem = {};
                         $location.path('/');
                     }
-                }));
             }));
-    }
+    };
 
     this.date = function(data) {
         data.date = data.date.substring(0,
@@ -87,29 +75,28 @@ module.exports = function($scope, $rootScope, $articles, $location, usersService
 
     this.incrementRating = function() {
         var rating = +this.articleItem.rating + 1;
+        this.articleItem.usersRating.push(usersService.getUser());
         var request = {
-            rating: rating
+            rating: rating,
+            usersRating: this.articleItem.usersRating
         };
-        usersService.setUserRating(this.articleItem._id);
+
         this.checkRating = false;
         var jsonReguest = JSON.stringify(request);
         this.updateArticle(jsonReguest);
     };
 
     this.updateArticle = function functionName(jsonReguest) {
-        $articles.updateArticle(jsonReguest, $location.path(),
+        $articles.updateArticle(jsonReguest,
             angular.bind(this, function(data) {
-                $scope.$apply(angular.bind(this, function() {
                     this.articleItem = {};
                     this.date(data.article);
                     this.articleItem = data.article;
 
-                }));
             }));
     };
 
     this.submitComment = function() {
-        console.log(this.comment);
         if (this.comment !== '') {
             var comment = {
                 comment: {

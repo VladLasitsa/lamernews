@@ -12,19 +12,14 @@ module.exports = function($scope, $rootScope, $users, $location, $articles, user
     var username = path.substring(path.lastIndexOf('/'));
 
     $rootScope.$on('userSignIn', angular.bind(this, function() {
-        $scope.$apply(angular.bind(this, function() {
-            this.checkUser = true;
-
-        }));
+        this.checkUser = true;
     }));
 
     $users.getUser(username, angular.bind(this, function(data) {
-        $scope.$apply(angular.bind(this, function() {
-            this.user = data.user;
-            if (this.user.username === usersService.getUser()) {
-                this.checkUser = true;
-            }
-        }));
+        this.user = data.user;
+        if (this.user.username === usersService.getUser()) {
+            this.checkUser = true;
+        }
     }));
 
     this.showUpdateBlock = function() {
@@ -52,13 +47,11 @@ module.exports = function($scope, $rootScope, $users, $location, $articles, user
             title: this.titleArticle
         };
         $articles.createArticle(JSON.stringify(request), angular.bind(this, function(data) {
-            $scope.$apply(angular.bind(this, function() {
-                if (angular.equals(data.status, 'OK')) {
-                    this.create = false;
-                    this.hide = false;
-                    this.user.articleCount++;
-                }
-            }));
+            if (angular.equals(data.status, 'OK')) {
+                this.create = false;
+                this.hide = false;
+                this.user.articleCount++;
+            }
         }));
     };
 
@@ -67,12 +60,10 @@ module.exports = function($scope, $rootScope, $users, $location, $articles, user
             email: this.email
         };
         $users.updateUser(JSON.stringify(request), username, angular.bind(this, function(data) {
-            $scope.$apply(angular.bind(this, function() {
-                this.user = {};
-                this.user = data.user;
-                this.update = false;
-                this.hide = false;
-            }));
+            this.user = {};
+            this.user = data.user;
+            this.update = false;
+            this.hide = false;
         }));
     };
 };

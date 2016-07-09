@@ -52,6 +52,9 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	(function() {
+	  //karma and jasmine unit-test
+	  //юзать less вместо css
+	  //поработать с sql, новую ветку с sql и оставить mongoose
 	    'use strict';
 	    var ControllerSignIn = __webpack_require__(2);
 	    var ControllerArticles = __webpack_require__(3);
@@ -113,7 +116,6 @@
 	          suffix: '.json'
 	        });
 	        $translateProvider.preferredLanguage('en');
-	        // $translateProvider.useLocalStorage();
 	        $urlRouterProvider.otherwise('/articles');
 	    });
 	
@@ -161,7 +163,6 @@
 	        if (this.user.login !== '' && this.user.password !== '') {
 	            var req = 'username='+this.user.login+'&password='+this.user.password;
 	            $users.signIn(req, angular.bind(this, function(data) {
-	                $scope.$apply(angular.bind(this, function() {
 	                  if(angular.equals(data.status, 'OK')){
 	                    usersService.setUser(data.user.username);
 	                    usersService.logged(true);
@@ -173,9 +174,8 @@
 	                      this.errorRegistred = false;
 	                      this.user = {};
 	                  }
-	                }));
 	                if(!this.show){
-	                    $rootScope.$broadcast('userSignIn');
+	                    $rootScope.$emit('userSignIn');
 	                }
 	
 	            }));
@@ -193,7 +193,6 @@
 	        if (!angular.equals(login, '') && !angular.equals(password, '')) {
 	            var req = 'username='+this.user.login+'&password='+this.user.password;
 	            $users.createUser(req, angular.bind(this, function(data) {
-	                $scope.$apply(angular.bind(this, function() {
 	                  if(angular.equals(data.status, 'OK')){
 	                    usersService.setUser(data.user.username);
 	                    usersService.logged(true);
@@ -205,9 +204,8 @@
 	                    this.errorSign = false;
 	                    this.user = {};
 	                  }
-	                }));
 	                if(!this.show){
-	                    $rootScope.$broadcast('userSignIn');
+	                    $rootScope.$emit('userSignIn');
 	                }
 	            }));
 	        } else {
@@ -231,12 +229,11 @@
 	    this.startIndex = 0;
 	    this.tempStartIndex = 0;
 	    this.count = 10;
+	    
 	    $articles.getArticlesList(this.startIndex, this.count,
 	      this.sortType, angular.bind(this, function(data) {
-	        $scope.$apply(angular.bind(this, function() {
 	            this.date(data);
 	            this.articles = data.articles;
-	        }));
 	    }));
 	
 	    this.date = function (data) {
@@ -250,21 +247,16 @@
 	        this.sortType = sortType;
 	        $articles.getArticlesList(this.startIndex, this.count,
 	          sortType, angular.bind(this, function(data) {
-	            $scope.$apply(angular.bind(this, function() {
 	                this.date(data);
 	                this.articles = data.articles;
-	            }));
 	        }));
 	    };
 	
 	    this.randomArticle = function() {
 	        $articles.getRandomArticle(angular.bind(this, function(data) {
-	            $scope.$apply(angular.bind(this, function() {
 	                if (angular.equals(data.status, 'OK')) {
 	                    $location.url(data.article.link);
 	                }
-	
-	            }));
 	        }));
 	    };
 	
@@ -272,13 +264,11 @@
 	        this.tempStartIndex = this.tempStartIndex + 10;
 	        $articles.getArticlesList(this.tempStartIndex, this.count,
 	          this.sortType, angular.bind(this, function(data) {
-	            $scope.$apply(angular.bind(this, function() {
 	              this.date(data);
 	                data.articles.forEach(function(item, index) {
 	                    this.articles.push(item);
 	                });
 	
-	            }));
 	        }));
 	    };
 	};
@@ -297,14 +287,12 @@
 	    $rootScope.locale = $translate.proposedLanguage();
 	
 	    $rootScope.$on('userSignIn', angular.bind(this, function() {
-	        $scope.$apply(angular.bind(this, function() {
 	            this.username = usersService.getUser();
 	            this.user = usersService.isLogged();
-	        }));
 	    }));
 	
 	    this.showSignIn = function() {
-	        $rootScope.$broadcast('showSignIn');
+	        $rootScope.$emit('showSignIn');
 	    };
 	
 	    this.changeLang = function(locale) {
@@ -315,14 +303,12 @@
 	
 	    this.logout = function() {
 	        $users.logout(angular.bind(this, function(data) {
-	            $scope.$apply(angular.bind(this, function() {
 	                usersService.setUser('');
 	                usersService.logged(false);
 	                this.user = usersService.isLogged();
 	                $rootScope.$broadcast('logout');
-	            }));
 	        }));
-	    }
+	    };
 	};
 
 
@@ -341,56 +327,44 @@
 	
 	
 	    $rootScope.$on('userSignIn', angular.bind(this, function() {
-	        $scope.$apply(angular.bind(this, function() {
 	            this.checkUser = true;
-	            this.checkRating = this.checkRatingF();
+	            if(this.articleItem.usersRating.length === 0 ||
+	              this.articleItem.usersRating.indexOf(usersService.getUser()) === -1) {
+	              this.checkRating = true;
+	            }
 	            if (this.articleItem.authorusername === usersService.getUser()) {
 	                this.checkArticleOwner = true;
 	            }
-	        }));
 	    }));
 	
 	    $rootScope.$on('logout', angular.bind(this, function() {
-	        $scope.$apply(angular.bind(this, function() {
 	            this.checkUser = false;
 	            this.checkRating = false;
 	            this.checkArticleOwner = false;
-	        }));
 	    }));
 	
-	    $articles.getArticle($location.path(), angular.bind(this, function(data) {
-	        $scope.$apply(angular.bind(this, function() {
+	    $articles.getArticle(angular.bind(this, function(data) {
 	            this.articleItem = {};
 	            this.date(data.article);
 	            this.articleItem = data.article;
-	            this.checkRating = this.checkRatingF();
+	             if(data.article.usersRating.length === 0 ||
+	               data.article.usersRating.indexOf(usersService.getUser()) === -1) {
+	               this.checkRating = true;
+	             }
 	            if (this.articleItem.authorusername === usersService.getUser()) {
 	                this.checkArticleOwner = true;
 	            }
-	        }));
 	    }));
-	
-	    this.checkRatingF = function functionName() {
-	        if (this.checkUser) {
-	            return usersService.rating(this.articleItem._id);
-	        } else {
-	            return false;
-	        }
-	    };
-	
 	
 	
 	    this.remove = function() {
-	        $articles.deleteArticle($location.path(),
-	            angular.bind(this, function(data) {
-	                $scope.$apply(angular.bind(this, function() {
+	        $articles.deleteArticle(angular.bind(this, function(data) {
 	                    if (data.status === 'OK') {
 	                        this.articleItem = {};
 	                        $location.path('/');
 	                    }
-	                }));
 	            }));
-	    }
+	    };
 	
 	    this.date = function(data) {
 	        data.date = data.date.substring(0,
@@ -419,29 +393,28 @@
 	
 	    this.incrementRating = function() {
 	        var rating = +this.articleItem.rating + 1;
+	        this.articleItem.usersRating.push(usersService.getUser());
 	        var request = {
-	            rating: rating
+	            rating: rating,
+	            usersRating: this.articleItem.usersRating
 	        };
-	        usersService.setUserRating(this.articleItem._id);
+	
 	        this.checkRating = false;
 	        var jsonReguest = JSON.stringify(request);
 	        this.updateArticle(jsonReguest);
 	    };
 	
 	    this.updateArticle = function functionName(jsonReguest) {
-	        $articles.updateArticle(jsonReguest, $location.path(),
+	        $articles.updateArticle(jsonReguest,
 	            angular.bind(this, function(data) {
-	                $scope.$apply(angular.bind(this, function() {
 	                    this.articleItem = {};
 	                    this.date(data.article);
 	                    this.articleItem = data.article;
 	
-	                }));
 	            }));
 	    };
 	
 	    this.submitComment = function() {
-	        console.log(this.comment);
 	        if (this.comment !== '') {
 	            var comment = {
 	                comment: {
@@ -481,19 +454,14 @@
 	    var username = path.substring(path.lastIndexOf('/'));
 	
 	    $rootScope.$on('userSignIn', angular.bind(this, function() {
-	        $scope.$apply(angular.bind(this, function() {
-	            this.checkUser = true;
-	
-	        }));
+	        this.checkUser = true;
 	    }));
 	
 	    $users.getUser(username, angular.bind(this, function(data) {
-	        $scope.$apply(angular.bind(this, function() {
-	            this.user = data.user;
-	            if (this.user.username === usersService.getUser()) {
-	                this.checkUser = true;
-	            }
-	        }));
+	        this.user = data.user;
+	        if (this.user.username === usersService.getUser()) {
+	            this.checkUser = true;
+	        }
 	    }));
 	
 	    this.showUpdateBlock = function() {
@@ -521,13 +489,11 @@
 	            title: this.titleArticle
 	        };
 	        $articles.createArticle(JSON.stringify(request), angular.bind(this, function(data) {
-	            $scope.$apply(angular.bind(this, function() {
-	                if (angular.equals(data.status, 'OK')) {
-	                    this.create = false;
-	                    this.hide = false;
-	                    this.user.articleCount++;
-	                }
-	            }));
+	            if (angular.equals(data.status, 'OK')) {
+	                this.create = false;
+	                this.hide = false;
+	                this.user.articleCount++;
+	            }
 	        }));
 	    };
 	
@@ -536,12 +502,10 @@
 	            email: this.email
 	        };
 	        $users.updateUser(JSON.stringify(request), username, angular.bind(this, function(data) {
-	            $scope.$apply(angular.bind(this, function() {
-	                this.user = {};
-	                this.user = data.user;
-	                this.update = false;
-	                this.hide = false;
-	            }));
+	            this.user = {};
+	            this.user = data.user;
+	            this.update = false;
+	            this.hide = false;
 	        }));
 	    };
 	};
@@ -636,99 +600,71 @@
 /* 17 */
 /***/ function(module, exports) {
 
-	module.exports = function() {
+	module.exports = function($http, $location) {
 	    'use strict';
 	    return {
 	
-	
 	        getArticlesList: function(startIndex, count, typeSort, callback) {
-	            fetch('/api/articles/' + startIndex + '/' +
+	            $http.get('/api/articles/' + startIndex + '/' +
 	                    count + '?sort=' + typeSort)
 	                .then(function(response) {
-	                    return response.json();
-	                }).then(function(json) {
-	                    callback(json);
-	                })
-	                .catch(function(error) {
-	                    console.log('Request failed', error);
-	                });
+	                    callback(response.data);
+	                }, function(response) {});
 	        },
 	
-	        getArticle: function(link, callback) {
-	            fetch(`/api${link}`)
-	                .then(function(response) {
-	                    return response.json();
-	                }).then(function(json) {
-	                    callback(json);
-	                })
-	                .catch(function(error) {
-	                    console.log('Request failed', error);
-	                });
+	        getArticle: function(callback) {
+	            $http.get(`/api` + $location.path()).then(function(response) {
+	                callback(response.data);
+	            }, function(response) {
+	
+	            });
 	        },
 	
 	        getRandomArticle: function(callback) {
-	            fetch('/api/articles/random')
-	                .then(function(response) {
-	                    return response.json();
-	                }).then(function(json) {
-	                    callback(json);
-	                })
-	                .catch(function(error) {
-	                    console.log('Request failed', error);
-	                });
+	            $http.get(`/api/articles/random`).then(function(response) {
+	                callback(response.data);
+	            }, function(response) {
+	
+	            });
 	        },
 	
 	        createArticle: function(request, callback) {
-	            fetch('/api/articles', {
-	                    method: 'POST',
-	                    headers: {
-	                        "Content-type": "application/json; charset=UTF-8"
-	                    },
-	                    credentials: 'include',
-	                    body: request
-	                })
-	                .then(function(response) {
-	                    return response.json();
-	                }).then(function(json) {
-	                    callback(json);
-	                })
-	                .catch(function(error) {
-	                    console.log('Request failed', error);
-	                });
+	            $http.post('/api/articles', request, {
+	                headers: {
+	                    "Content-type": "application/json; charset=UTF-8"
+	                },
+	                withCredentials: true
+	            }).then(function(response) {
+	                callback(response.data);
+	            }, function(response) {
+	
+	            });
 	        },
 	
-	        updateArticle: function(request, link, callback) {
-	            fetch(`/api${link}`, {
-	                    method: 'PUT',
-	                    headers: {
-	                        "Content-type": "application/json; charset=UTF-8"
-	                    },
-	                    credentials: 'include',
-	                    body: request
-	                })
-	                .then(function(response) {
-	                    return response.json();
-	                }).then(function(json) {
-	                    callback(json);
-	                })
-	                .catch(function(error) {
-	                    console.log('Request failed', error);
-	                });
+	        updateArticle: function(request, callback) {
+	            $http.put('/api' + $location.path(), request, {
+	                headers: {
+	                    "Content-type": "application/json; charset=UTF-8"
+	                },
+	                withCredentials: true
+	            }).then(function(response) {
+	                callback(response.data);
+	            }, function(response) {
+	
+	            });
 	        },
 	
-	        deleteArticle: function(link, callback) {
-	            fetch(`/api${link}`, {
-	                    method: 'DELETE',
-	                    credentials: 'include',
-	                })
-	                .then(function(response) {
-	                    return response.json();
-	                }).then(function(json) {
-	                    callback(json);
-	                })
-	                .catch(function(error) {
-	                    console.log('Request failed', error);
-	                });
+	        deleteArticle: function(callback) {
+	            $http.delete('/api' + $location.path(), {
+	                headers: {
+	                    "Content-type": "application/json; charset=UTF-8"
+	                },
+	                withCredentials: true
+	            }).then(function(response) {
+	                callback(response.data);
+	            }, function(response) {
+	
+	            });
 	        }
 	    };
 	};
@@ -743,104 +679,73 @@
 	    return {
 	
 	        signIn: function(request, callback) {
-	            fetch('/api/signup', {
-	                    method: 'POST',
-	                    headers: {
-	                        "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
-	                    },
-	                    credentials: 'include',
-	                    body: request
-	                })
-	                .then(function(response) {
-	                    return response.json();
-	                }).then(function(json) {
-	                    callback(json);
-	                })
-	                .catch(function(error) {
-	                    console.log('Request failed', error);
-	                });
+	          $http.post('/api/signup', request, {
+	              headers: {
+	                  "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
+	              },
+	              withCredentials: true
+	          }).then(function(response) {
+	              callback(response.data);
+	          }, function(response) {
+	
+	          });
 	
 	        },
 	
 	        getUser: function(username, callback) {
-	            fetch('/api/users' + username, {
-	                    credentials: 'include'
-	                })
-	                .then(function(response) {
-	                    return response.json();
-	                }).then(function(json) {
-	                    callback(json);
-	                })
-	                .catch(function(error) {
-	                    console.log('Request failed', error);
-	                });
+	          $http.get('/api/users' + username, {
+	            withCredentials: true
+	          }).then(function(response) {
+	            callback(response.data);
+	          }, function (response) {
+	
+	          });
 	        },
 	
 	        createUser: function(request, callback) {
-	            fetch('/api/register', {
-	                    method: 'POST',
-	                    headers: {
-	                        "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
-	                    },
-	                    credentials: 'include',
-	                    body: request
-	                })
-	                .then(function(response) {
-	                    return response.json();
-	                }).then(function(json) {
-	                    callback(json);
-	                })
-	                .catch(function(error) {
-	                    console.log('Request failed', error);
-	                });
+	          $http.post('/api/register', request, {
+	            headers: {
+	                "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
+	            },
+	            withCredentials: true
+	          }).then(function (response) {
+	            callback(response.data);
+	          }, function (response) {
+	
+	          });
 	        },
 	
 	        updateUser: function(request, username, callback) {
-	            fetch('/api/users' + username, {
-	                    method: 'PUT',
-	                    headers: {
-	                        "Content-type": "application/json; charset=UTF-8"
-	                    },
-	                    credentials: 'include',
-	                    body: request
-	                })
-	                .then(function(response) {
-	                    return response.json();
-	                }).then(function(json) {
-	                    callback(json);
-	                })
-	                .catch(function(error) {
-	                    console.log('Request failed', error);
-	                });
+	          $http.put('/api/users' + username, request, {
+	            headers: {
+	                "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
+	            },
+	            withCredentials: true
+	          }).then(function (response) {
+	            callback(response.data);
+	          }, function (response) {
+	
+	          });
 	        },
 	
 	        logout : function (callback) {
-	          fetch('/api/logout', {
-	                  credentials: 'include'
-	              })
-	              .then(function(response) {
-	                  return response.json();
-	              }).then(function(json) {
-	                  callback(json);
-	              })
-	              .catch(function(error) {
-	                  console.log('Request failed', error);
-	              });
+	          $http.get('/api/logout', {
+	            withCredentials: true
+	          }).then(function (response) {
+	            callback(response.data);
+	          }, function (response) {
+	
+	          });
 	        },
 	
 	        deleteUser: function(username, callback) {
-	            fetch('/api/users' + username, {
-	                    method: 'DELETE',
-	                    credentials: 'include'
-	                })
-	                .then(function(response) {
-	                    return response.json();
-	                }).then(function(json) {
-	                    callback(json);
-	                })
-	                .catch(function(error) {
-	                    console.log('Request failed', error);
-	                });
+	          $http.delete('/api/users' + username, {
+	            withCredentials: true
+	          }).then(function (response) {
+	            callback(response.data);
+	          },function (response) {
+	
+	          });
 	        }
 	    };
 	};
@@ -854,26 +759,22 @@
 	    var user = '';
 	    var auth = false;
 	    var usersRating = [];
-	
-	    this.setUserRating = function(id) {
-	        usersRating.push(id);
-	    };
-	
-	    this.rating = function(id) {
-	        var check = true;
-	        usersRating.forEach(function(item, index) {
-	          console.log(item+",  "+ id);
-	            if (item === id) {
-	                check = false;
-	            }
-	        });
-	        if (check) {
-	            return true;
-	        } else {
-	            return false;
-	        }
-	
-	    };
+	    // 
+	    // this.setUserRating = function(id) {
+	    //     usersRating.push(id);
+	    // };
+	    //
+	    // this.rating = function(id) {
+	    //     var check = true;
+	    //     usersRating.forEach(function(item, index) {
+	    //       console.log(item+",  "+ id);
+	    //         if (item === id) {
+	    //             check = false;
+	    //         }
+	    //     });
+	    //     return check;
+	    //
+	    // };
 	
 	    this.setUser = function(username) {
 	        user = username;
@@ -890,7 +791,7 @@
 	    this.isLogged = function() {
 	        return auth;
 	    };
-	}
+	};
 
 
 /***/ }
