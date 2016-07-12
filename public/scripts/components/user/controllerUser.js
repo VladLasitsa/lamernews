@@ -59,7 +59,8 @@ module.exports = function($scope, $rootScope, $users, $location, $articles, user
         var request = {
             email: this.email
         };
-        $users.updateUser(JSON.stringify(request), username, angular.bind(this, function(data) {
+        var reqJson = JSON.stringify(request);
+        $users.updateUser(reqJson, username, angular.bind(this, function(data) {
             this.user = {};
             this.user = data.user;
             this.update = false;

@@ -1,7 +1,8 @@
-var UserModel = require('../models/User.js');
+var User = require('../models/User.js');
 
 module.exports = function(app) {
-      'use strict';
+    'use strict';
+
     function isLogged(req, res, next) {
         if (req.isAuthenticated()) {
             return next();
@@ -13,94 +14,57 @@ module.exports = function(app) {
     app.get('/api/users/:username', function(req, res) {
         var name = req.params.username;
         if (req.isAuthenticated()) {
-            UserModel.findOne({
-                username: name
-            }, function(err, user) {
-                if (!err) {
-
-                    return res.json({
-                        status: 'OK',
-                        user: user
-                    });
-                } else {
-                    res.statusCode = 500;
-                    return res.json({
-                        error: 'Server error'
-                    });
-                }
+            User.getUser(name, true, function(user) {
+                return res.json({
+                    status: 'OK',
+                    user: user
+                });
             });
+
         } else {
-            UserModel.findOne({
-                username: name
-            }, {
-                username: 1,
-                email: 1
-            }, function(err, user) {
-                if (!err) {
-                    return res.send({
-                        status: 'OK',
-                        user: user
-                    });
-                } else {
-                    res.statusCode = 500;
-                    return res.send({
-                        error: 'Server error'
-                    });
-                }
-            })
+            User.getUser(name, false, function(user) {
+                return res.json({
+                    status: 'OK',
+                    user: user
+                });
+            });
+
         }
 
     });
 
     app.put('/api/users/:username', isLogged, function(req, res) {
         var name = req.params.username;
-        UserModel.findOne({
-            'username': name
-        }, function(err, user) {
-            if (!err && req.user.username === name) {
-                user.email = req.body.email || user.email;
-                user.save(function(err) {
-                    if (err) {
-                        return res.send("Error");
-                    } else {
+
+        User.getUser(name, true, function(user) {
+          console.log(req.body);
+            var email = req.body.email || user.email;
+            var commentCount = req.body.commentCount || user.commentCount;
+            var articleCount = req.body.articleCount || user.articleCount;
+
+            if (req.user.username === name) {
+                User.updateUser(email, commentCount, articleCount, name, function(user) {
+                    User.getUser(name, true, function(user) {
                         return res.json({
                             status: 'OK',
                             user: user
                         });
-                    }
+                    });
 
                 });
 
-            } else {
-                res.statusCode = 500;
-                return res.send({
-                    error: 'Server error'
-                });
             }
         });
     });
 
     app.delete('/api/users/:username', isLogged, function(req, res) {
         var name = req.params.username;
-        UserModel.findOne({
-            'username': name
-        }, function(err, user) {
-            if (!user) {
-                res.statusCode = 404;
-                return res.send({
-                    error: 'Not found'
-                });
-            }
-            return user.remove(function(err) {
-                if (!err) {
-                    return res.redirect('/');
-                } else {
-                    res.statusCode = 500;
-                    return res.send({
-                        error: 'Server error'
-                    });
-                }
-            })
-        });
+        if (req.user.username === name) {
+            var user = User.deleteUser(name);
+
+            return res.json({
+                status: 'OK'
+            });
+        }
     });
 }

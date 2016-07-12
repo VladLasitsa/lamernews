@@ -6,16 +6,18 @@ module.exports = function($scope, $articles, $location) {
     this.tempStartIndex = 0;
     this.count = 10;
     
-    $articles.getArticlesList(this.startIndex, this.count,
-      this.sortType, angular.bind(this, function(data) {
-            this.date(data);
-            this.articles = data.articles;
-    }));
+    this.init = function () {
+      $articles.getArticlesList(this.startIndex, this.count,
+        this.sortType, angular.bind(this, function(data) {
+              this.date(data);
+              this.articles = data.articles;
+      }));
+    }
 
     this.date = function (data) {
       data.articles.forEach(function(item, index) {
-          item.date = item.date.substring(0, item.date.indexOf('T')) + ' ' +
-              item.date.substring(item.date.indexOf('T') + 1, item.date.indexOf('.'));
+          item.date = new Date(+item.date);
+          item.date = item.date.toDateString();
       });
     };
 
@@ -33,6 +35,7 @@ module.exports = function($scope, $articles, $location) {
                 if (angular.equals(data.status, 'OK')) {
                     $location.url(data.article.link);
                 }
+
         }));
     };
 
@@ -47,4 +50,6 @@ module.exports = function($scope, $articles, $location) {
 
         }));
     };
+
+    this.init();
 };

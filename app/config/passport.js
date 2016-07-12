@@ -5,65 +5,49 @@ module.exports = function(passport) {
     'use strict';
     passport.use('registred', new localStrategy(
         function(username, password, done) {
+            var userCheck = User.getUser(username);
+            if (typeof userCheck === 'undefined') {
+                var newUser = {};
+                newUser.username = username;
+                newUser.password = User.generateHash(password);
+                newUser.registrationDate = new Date();
+                newUser.commentCount = 0;
+                newUser.articleCount = 0;
+                newUser.email = '';
+                User.createUser(newUser, function () {
+                  User.getUser(username, true, function (user) {
+                    return done(null, user)
+                  });
+                });
 
-            User.findOne({
-                'username': username
-            }, function(err, user) {
-                if (user) {
-                    console.log("User alredy exists");
-                    return done(null, false, {
-                        message: "User alredy exists"
-                    });
-                } else {
-                    var newUser = new User();
-                    newUser.username = username;
-                    newUser.password = newUser.generateHash(password);
-                    newUser.registrationDate = new Date();
-                    newUser.commentCount = 0;
-                    newUser.articleCount = 0;
-                    newUser.email = '';
-                    newUser.save(function(err) {
-                        if (err) {
-                            console.log('Server Error');
-                            return done(null, false, {
-                                message: 'Server Error'
-                            });
-                        }
-                        console.log("OK");
-                        return done(null, newUser);
-                    });
-                }
-            });
+            } else {
+                return done(null, null);
+            }
+
         }));
 
-    passport.use('signup', new localStrategy(function(username, password, done) {
-      console.log(username, password);
-        User.findOne({
-            'username': username
-        }, function(err, user) {
-            if (!err && user && !user.validPassword(password)) {
-               return done(null, false);
-            }
-            if(err) {
-              return done(null, false);
-            }
-            if(!user){
-              return done(null, false);
-            }
 
-            else {
-              return done(null, user);
-            }
-        });
+    passport.use('signup', new localStrategy(function(username, password, done) {
+
+         User.getUser(username, true, function (user) {
+           if (!User.validPassword(password, user.password)) {
+               return done(null, false);
+           } else {
+               return done(null, user);
+           }
+         });
+
     }));
 
     passport.serializeUser(function(user, done) {
-        done(null, user._id);
+        done(null, user.username);
     });
 
-    passport.deserializeUser(function(userId, done) {
-        User.findById(userId, function(err, user) {
-            done(err, user);
+    passport.deserializeUser(function(userUsername, done) {
+        User.getUser(userUsername, true, function (user) {
+          done(null, user);
         });
+
+
     });
 }

@@ -1,23 +1,6 @@
 module.exports = function() {
     var user = '';
     var auth = false;
-    var usersRating = [];
-    // 
-    // this.setUserRating = function(id) {
-    //     usersRating.push(id);
-    // };
-    //
-    // this.rating = function(id) {
-    //     var check = true;
-    //     usersRating.forEach(function(item, index) {
-    //       console.log(item+",  "+ id);
-    //         if (item === id) {
-    //             check = false;
-    //         }
-    //     });
-    //     return check;
-    //
-    // };
 
     this.setUser = function(username) {
         user = username;

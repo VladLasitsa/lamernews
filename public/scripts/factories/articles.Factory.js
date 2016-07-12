@@ -2,6 +2,7 @@ module.exports = function($http, $location) {
     'use strict';
     return {
 
+
         getArticlesList: function(startIndex, count, typeSort, callback) {
             $http.get('/api/articles/' + startIndex + '/' +
                     count + '?sort=' + typeSort)
@@ -39,8 +40,8 @@ module.exports = function($http, $location) {
             });
         },
 
-        updateArticle: function(request, callback) {
-            $http.put('/api' + $location.path(), request, {
+        updateArticle: function(request, id,callback) {
+            $http.put('/api/articles/' + id, request, {
                 headers: {
                     "Content-type": "application/json; charset=UTF-8"
                 },
@@ -52,8 +53,8 @@ module.exports = function($http, $location) {
             });
         },
 
-        deleteArticle: function(callback) {
-            $http.delete('/api' + $location.path(), {
+        deleteArticle: function(id, callback) {
+            $http.delete('/api/articles/' + id, {
                 headers: {
                     "Content-type": "application/json; charset=UTF-8"
                 },
