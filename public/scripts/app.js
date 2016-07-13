@@ -1,18 +1,9 @@
 (function() {
     'use strict';
-    var ControllerSignIn = require('./controllers/controllerSignIn');
-    var ControllerArticles = require('./controllers/controllerArticles');
-    var ControllerHeader = require('./controllers/controllerHeader');
-    var ControllerArticle = require('./controllers/controllerArticle');
-    var ControllerUser = require('./controllers/controllerUser');
-    var ArticlesComponent = require('./components/articles.component');
-    var ArticleItemComponent = require('./components/articleItem.component');
-    var HeaderComponent = require('./components/header.component');
-    var SignInComponent = require('./components/signIn.component');
-    var UserComponent = require('./components/user.component');
     var ArticlesFactory = require('./factories/articles.Factory');
     var UsersFactory = require('./factories/users.Factory');
     var UsersService = require('./services/users.Service');
+     var mainStyle = require('../styles/main.less');
 
     var app = angular.module('app', ['ui.router', 'pascalprecht.translate']);
     app.config(function($stateProvider, $urlRouterProvider, $translateProvider) {        
@@ -28,7 +19,8 @@
                 'signin': {
                     template: '<signin></signin>'
                 }
-            }    
+            }, 
+            css: mainStyle  
         }); 
         $stateProvider.state('articleItem', {            
             url: '/articles/:id',
@@ -42,7 +34,8 @@
                 'signin': {
                     template: '<signin></signin>'
                 }
-            }    
+            }, 
+            css: mainStyle    
         }); 
         $stateProvider.state('user', {            
             url: '/users/:username',
@@ -53,14 +46,14 @@
                 'content': {
                     template: '<user></user>'
                 }
-            }    
+            }, 
+            css: mainStyle    
         }); 
         $translateProvider.useStaticFilesLoader({
-          prefix: 'resource/',
-          suffix: '.json'
+            prefix: 'resource/',
+            suffix: '.json'
         });
         $translateProvider.preferredLanguage('en');
-        // $translateProvider.useLocalStorage();
         $urlRouterProvider.otherwise('/articles');
     });
 
@@ -69,17 +62,11 @@
     app.factory('$articles', ArticlesFactory);
     app.factory('$users', UsersFactory);
 
+    require('./components/articleItem/articleItem.component')(app);
+    require('./components/articles/articles.component')(app);
+    require('./components/header/header.component')(app);
+    require('./components/user/user.component')(app);
+    require('./components/signIn/signIn.component')(app);
 
-    app.component('header', HeaderComponent);
-    app.component('signin', SignInComponent);
-    app.component('articles', ArticlesComponent);
-    app.component('articleitem', ArticleItemComponent);
-    app.component('user', UserComponent);
-
-    app.controller('controllerUser', ControllerUser);
-    app.controller('controllerHeader', ControllerHeader);
-    app.controller('controllerSignIn', ControllerSignIn);
-    app.controller('controllerArticles', ControllerArticles);
-    app.controller('controllerArticle', ControllerArticle);
 
 })();

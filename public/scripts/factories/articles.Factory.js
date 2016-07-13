@@ -1,96 +1,69 @@
-module.exports = function() {
+module.exports = function($http, $location) {
     'use strict';
     return {
 
 
         getArticlesList: function(startIndex, count, typeSort, callback) {
-            fetch('/api/articles/' + startIndex + '/' +
+            $http.get('/api/articles/' + startIndex + '/' +
                     count + '?sort=' + typeSort)
                 .then(function(response) {
-                    return response.json();
-                }).then(function(json) {
-                    callback(json);
-                })
-                .catch(function(error) {
-                    console.log('Request failed', error);
-                });
+                    callback(response.data);
+                }, function(response) {});
         },
 
-        getArticle: function(link, callback) {
-            fetch(`/api${link}`)
-                .then(function(response) {
-                    return response.json();
-                }).then(function(json) {
-                    callback(json);
-                })
-                .catch(function(error) {
-                    console.log('Request failed', error);
-                });
+        getArticle: function(callback) {
+            $http.get(`/api` + $location.path()).then(function(response) {
+                callback(response.data);
+            }, function(response) {
+
+            });
         },
 
         getRandomArticle: function(callback) {
-            fetch('/api/articles/random')
-                .then(function(response) {
-                    return response.json();
-                }).then(function(json) {
-                    callback(json);
-                })
-                .catch(function(error) {
-                    console.log('Request failed', error);
-                });
+            $http.get(`/api/articles/random`).then(function(response) {
+                callback(response.data);
+            }, function(response) {
+
+            });
         },
 
         createArticle: function(request, callback) {
-            fetch('/api/articles', {
-                    method: 'POST',
-                    headers: {
-                        "Content-type": "application/json; charset=UTF-8"
-                    },
-                    credentials: 'include',
-                    body: request
-                })
-                .then(function(response) {
-                    return response.json();
-                }).then(function(json) {
-                    callback(json);
-                })
-                .catch(function(error) {
-                    console.log('Request failed', error);
-                });
+            $http.post('/api/articles', request, {
+                headers: {
+                    "Content-type": "application/json; charset=UTF-8"
+                },
+                withCredentials: true
+            }).then(function(response) {
+                callback(response.data);
+            }, function(response) {
+
+            });
         },
 
-        updateArticle: function(request, link, callback) {
-            fetch(`/api${link}`, {
-                    method: 'PUT',
-                    headers: {
-                        "Content-type": "application/json; charset=UTF-8"
-                    },
-                    credentials: 'include',
-                    body: request
-                })
-                .then(function(response) {
-                    return response.json();
-                }).then(function(json) {
-                    callback(json);
-                })
-                .catch(function(error) {
-                    console.log('Request failed', error);
-                });
+        updateArticle: function(request, id,callback) {
+            $http.put('/api/articles/' + id, request, {
+                headers: {
+                    "Content-type": "application/json; charset=UTF-8"
+                },
+                withCredentials: true
+            }).then(function(response) {
+                callback(response.data);
+            }, function(response) {
+
+            });
         },
 
-        deleteArticle: function(link, callback) {
-            fetch(`/api${link}`, {
-                    method: 'DELETE',
-                    credentials: 'include',
-                })
-                .then(function(response) {
-                    return response.json();
-                }).then(function(json) {
-                    callback(json);
-                })
-                .catch(function(error) {
-                    console.log('Request failed', error);
-                });
+        deleteArticle: function(id, callback) {
+            $http.delete('/api/articles/' + id, {
+                headers: {
+                    "Content-type": "application/json; charset=UTF-8"
+                },
+                withCredentials: true
+            }).then(function(response) {
+                callback(response.data);
+            }, function(response) {
+
+            });
         }
     };
 };

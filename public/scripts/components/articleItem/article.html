@@ -1,0 +1,40 @@
+<div class="article">
+    <div class="del"  ng-show="articleCntr.checkArticleOwner">
+        <a class="delete-button" ng-click="articleCntr.remove()">
+      {{'DELETE_ARTICLE' | translate}}</a>
+    </div>
+    <div class="article-name">
+        <span>{{articleCntr.articleItem.title}}</span>
+
+    </div>
+    <div class="article-info">
+        <div class="number-listeners">
+            <a ng-href="#/users/{{articleCntr.articleItem.authorusername}}">
+              {{articleCntr.articleItem.authorusername}}</a></div>
+        <div class="begin">{{articleCntr.articleItem.date}}</div>
+        <div>
+            <a ng-click="articleCntr.incrementRating()" ng-show="articleCntr.checkRating">
+                <span class="fa fa-thumbs-o-up up"></span></a>
+            {{articleCntr.articleItem.rating}}</div>
+
+    </div>
+</div>
+
+<div class="title-comment">{{'COMMENTS' | translate}}</div>
+<div class="comment" ng-repeat="comment in articleCntr.articleItem.comments">
+    <div class="author-comment">
+        {{comment.username}}
+    </div>
+    <div class="date-comment">
+        {{comment.date}}
+    </div>
+    <div class="text">
+        {{comment.text}}
+    </div>
+</div>
+<div class="input-comment" ng-show="articleCntr.checkUser">
+    <div>
+        <textarea class="field-comment" ng-model="articleCntr.comment" class="field-input-comment"></textarea>
+    </div>
+    <button class="submit-comment" ng-click="articleCntr.submitComment()">{{'SUBMIT' | translate}}</button>
+</div>

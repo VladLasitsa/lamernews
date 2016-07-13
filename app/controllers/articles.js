@@ -159,7 +159,9 @@ module.exports = function(app) {
                 });
             } else {
                 article.rating = req.body.rating || article.rating;
-                console.log(req.user.username);
+                if(typeof req.body.usersRating !== 'undefined') {
+                  article.usersRating.push(req.body.usersRating);
+                }
 
                 if (typeof req.body.comment !== 'undefined') {
                     req.body.comment.username = req.user.username;

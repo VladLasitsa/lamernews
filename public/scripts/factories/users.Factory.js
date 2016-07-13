@@ -3,104 +3,73 @@ module.exports = function($http) {
     return {
 
         signIn: function(request, callback) {
-            fetch('/api/signup', {
-                    method: 'POST',
-                    headers: {
-                        "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
-                    },
-                    credentials: 'include',
-                    body: request
-                })
-                .then(function(response) {
-                    return response.json();
-                }).then(function(json) {
-                    callback(json);
-                })
-                .catch(function(error) {
-                    console.log('Request failed', error);
-                });
+          $http.post('/api/signup', request, {
+              headers: {
+                  "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
+              },
+              withCredentials: true
+          }).then(function(response) {
+              callback(response.data);
+          }, function(response) {
+
+          });
 
         },
 
         getUser: function(username, callback) {
-            fetch('/api/users' + username, {
-                    credentials: 'include'
-                })
-                .then(function(response) {
-                    return response.json();
-                }).then(function(json) {
-                    callback(json);
-                })
-                .catch(function(error) {
-                    console.log('Request failed', error);
-                });
+          $http.get('/api/users' + username, {
+            withCredentials: true
+          }).then(function(response) {
+            callback(response.data);
+          }, function (response) {
+
+          });
         },
 
         createUser: function(request, callback) {
-            fetch('/api/register', {
-                    method: 'POST',
-                    headers: {
-                        "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
-                    },
-                    credentials: 'include',
-                    body: request
-                })
-                .then(function(response) {
-                    return response.json();
-                }).then(function(json) {
-                    callback(json);
-                })
-                .catch(function(error) {
-                    console.log('Request failed', error);
-                });
+          $http.post('/api/register', request, {
+            headers: {
+                "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
+            },
+            withCredentials: true
+          }).then(function (response) {
+            callback(response.data);
+          }, function (response) {
+
+          });
         },
 
         updateUser: function(request, username, callback) {
-            fetch('/api/users' + username, {
-                    method: 'PUT',
-                    headers: {
-                        "Content-type": "application/json; charset=UTF-8"
-                    },
-                    credentials: 'include',
-                    body: request
-                })
-                .then(function(response) {
-                    return response.json();
-                }).then(function(json) {
-                    callback(json);
-                })
-                .catch(function(error) {
-                    console.log('Request failed', error);
-                });
+          $http.put('/api/users' + username, request, {
+            headers: {
+                "Content-type": "application/json; charset=UTF-8"
+            },
+            withCredentials: true
+          }).then(function (response) {
+            callback(response.data);
+          }, function (response) {
+
+          });
         },
 
         logout : function (callback) {
-          fetch('/api/logout', {
-                  credentials: 'include'
-              })
-              .then(function(response) {
-                  return response.json();
-              }).then(function(json) {
-                  callback(json);
-              })
-              .catch(function(error) {
-                  console.log('Request failed', error);
-              });
+          $http.get('/api/logout', {
+            withCredentials: true
+          }).then(function (response) {
+            callback(response.data);
+          }, function (response) {
+
+          });
         },
 
         deleteUser: function(username, callback) {
-            fetch('/api/users' + username, {
-                    method: 'DELETE',
-                    credentials: 'include'
-                })
-                .then(function(response) {
-                    return response.json();
-                }).then(function(json) {
-                    callback(json);
-                })
-                .catch(function(error) {
-                    console.log('Request failed', error);
-                });
+          $http.delete('/api/users' + username, {
+            withCredentials: true
+          }).then(function (response) {
+            callback(response.data);
+          },function (response) {
+
+          });
         }
     };
 };

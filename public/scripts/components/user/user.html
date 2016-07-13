@@ -1,0 +1,69 @@
+<div class="profile" ng-hide="userCntr.hide">
+    <span></span>
+    <div class="info-content">
+        <div class="student-title">
+            <div class="student-login">
+                <div class="user-icon"></div>
+            </div>
+            <span>{{userCntr.user.username}}</span>
+            <a ng-show="userCntr.checkUser" class="signin-button update-button"
+              ng-click="userCntr.showUpdateBlock()">
+        {{'EDIT' | translate}}</a>
+            <a ng-show="userCntr.checkUser" class="signin-button update-button"
+              ng-click="userCntr.showCreateArticleBlock()">
+          {{'CREATE' | translate}}</a>
+        </div>
+        <div class="row-content">
+            <div class="title-info text-info">{{'USER_EMAIL' | translate}}</div>
+            <div class="value-info text-info">{{userCntr.user.email}}</div>
+        </div>
+        <div ng-show="userCntr.checkUser" class="row-content">
+            <div class="title-info text-info">{{'USER_COMMENT_COUNT' | translate}}</div>
+            <div class="value-info text-info">{{userCntr.user.commentCount}}</div>
+        </div>
+        <div ng-show="userCntr.checkUser" class="row-content">
+            <div class="title-info text-info">{{'USER_ARTICLE_COUNT' | translate}}</div>
+            <div class="value-info text-info">{{userCntr.user.articleCount}}</div>
+        </div>
+    </div>
+</div>
+<div class="update-profile" ng-show="userCntr.update">
+    <div class="info-content">
+        <div class="student-title">
+            <!-- <div class="student-login"><div class="user-icon"></div></div> -->
+            <span>{{userCntr.user.username}}</span>
+            <a class="signin-button cancel-button" ng-click="userCntr.hideUpdateBlock()">
+              {{'CANCEL' | translate}}</a>
+            <a class="signin-button update-button" ng-click="userCntr.updateUser()">
+              {{'SAVE'| translate}}</a>
+
+        </div>
+        <div class="row-content">
+            <div class="title-info text-info">
+                <label for="email">Email</label>
+            </div>
+            <input ng-model="userCntr.email" type="text"
+              class="value-info text-info field-input"
+              placeholder="{{'INPUT_EMAIL' | translate}}" id="email">
+        </div>
+    </div>
+</div>
+<div class="update-profile" ng-show="userCntr.create">
+    <div class="info-content">
+        <div class="student-title">
+            <a class="signin-button cancel-button"
+              ng-click="userCntr.hideCreateArticleBlock()">{{'CANCEL' | translate}}</a>
+            <a class="signin-button update-button"
+              ng-click="userCntr.createArticle()">{{'CREATE'| translate}}</a>
+
+        </div>
+        <div class="row-content">
+            <div class="title-info text-info">
+                <label for="email">{{'INPUT_TITLE_ARTICLE' | translate}}</label>
+            </div>
+            <input ng-model="userCntr.titleArticle"
+              type="text" class="value-info text-info field-input"
+              placeholder="{{'INPUT_TITLE_ARTICLE' | translate}}" id="email">
+        </div>
+    </div>
+</div>

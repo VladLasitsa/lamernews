@@ -3,13 +3,14 @@ var webpack = require('webpack');
 
 module.exports = {
 
-    context: __dirname + '/public',
+    context: path.join(__dirname, 'public'),
 
     entry: {
-        app: ['./scripts/app.js']
+        app: './scripts/app.js'
     },
     output: {
         path: __dirname + '/public/dist',
+        publicPath: './dist/',
         filename: 'bundle.js'
     },
 
@@ -29,13 +30,17 @@ module.exports = {
             test: /\.css$/,
             loader: "style-loader!css-loader"
         }, {
+            test: /\.less$/,
+            loader: "style!css!less"
+        }, {
             test: /\.html$/,
             loader: "html-loader"
-        }, ]
+        }, {
+            test: /\.(jpe?g|png|gif|svg)$/i,
+            loaders: [
+                'file?hash=sha512&digest=hex&name=[hash].[ext]',
+                'image-webpack'
+            ]
+        }]
     },
-
-    devServer: {
-        contentBase: __dirname + '/public',
-        hot: true
-    }
 };
