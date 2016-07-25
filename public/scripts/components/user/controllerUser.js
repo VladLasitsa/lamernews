@@ -8,19 +8,27 @@ module.exports = function($scope, $rootScope, $users, $location, $articles, user
     this.update = false;
     this.create = false;
     this.checkUser = false;
+    this.contentArticle = '';
+    this.error = false;
     var path = $location.path();
     var username = path.substring(path.lastIndexOf('/'));
 
     $rootScope.$on('userSignIn', angular.bind(this, function() {
-        this.checkUser = true;
+        this.init();
     }));
 
-    $users.getUser(username, angular.bind(this, function(data) {
-        this.user = data.user;
-        if (this.user.username === usersService.getUser()) {
-            this.checkUser = true;
-        }
+    $rootScope.$on('logout', angular.bind(this, function() {
+        this.checkUser = false;
     }));
+
+    this.init = function() {
+        $users.getUser(username, angular.bind(this, function(data) {
+            this.user = data.user;
+            if (this.user.username === usersService.getUser()) {
+                this.checkUser = true;
+            }
+        }));
+    };
 
     this.showUpdateBlock = function() {
         this.update = true;
@@ -43,28 +51,40 @@ module.exports = function($scope, $rootScope, $users, $location, $articles, user
     };
 
     this.createArticle = function() {
-        var request = {
-            title: this.titleArticle
-        };
-        $articles.createArticle(JSON.stringify(request), angular.bind(this, function(data) {
-            if (angular.equals(data.status, 'OK')) {
-                this.create = false;
-                this.hide = false;
-                this.user.articleCount++;
-            }
-        }));
+        if (this.titleArticle !== '' && this.contentArticle !== '') {
+            var request = {
+                title: this.titleArticle,
+                content: this.contentArticle
+            };
+            $articles.createArticle(JSON.stringify(request), angular.bind(this, function(data) {
+                if (angular.equals(data.status, 'OK')) {
+                    this.create = false;
+                    this.hide = false;
+                    this.user.articleCount++;
+                }
+            }));
+        } else {
+            this.error = true;
+        }
     };
 
     this.updateUser = function() {
-        var request = {
-            email: this.email
-        };
-        var reqJson = JSON.stringify(request);
-        $users.updateUser(reqJson, username, angular.bind(this, function(data) {
-            this.user = {};
-            this.user = data.user;
-            this.update = false;
-            this.hide = false;
-        }));
+        if (this.email !== '') {
+            var request = {
+                email: this.email
+            };
+            var reqJson = JSON.stringify(request);
+            $users.updateUser(reqJson, username, angular.bind(this, function(data) {
+                this.user = {};
+                this.user = data.user;
+                this.update = false;
+                this.hide = false;
+            }));
+        } else {
+            this.error = true;
+        }
+
     };
+
+    this.init();
 };

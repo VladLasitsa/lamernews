@@ -2,7 +2,7 @@ module.exports = function(app) {
     "use strict";
     var ControllerUser = require('./controllerUser');
     var userTemplate = require('./user');
-    var userStyle = require('../../../styles/user.less');
+    var userStyle = require('./user.less');
 
     app.controller('controllerUser', ControllerUser);
 

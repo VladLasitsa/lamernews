@@ -70,7 +70,7 @@ describe('testing controllerArticle', function() {
             controller.comment = "hello"
             controller.submitComment();
             expect(mockedArticlesFactory.updateArticle).toHaveBeenCalled();
-            expect(controller.comment).toEqual('');
+            expect(controller.comment).toBe('');
         });
         it('if comment is null must be error', function() {
 
@@ -83,7 +83,7 @@ describe('testing controllerArticle', function() {
             });
             controller.comment = ""
             controller.submitComment();
-            expect(controller.error).toEqual('Нет данных');
+            expect(controller.error).toBe(true);
         });
     });
 
@@ -100,7 +100,7 @@ describe('testing controllerArticle', function() {
 
             controller.incrementRating();
             expect(mockedArticlesFactory.updateArticle).toHaveBeenCalled();
-            expect(controller.checkRating).toBe(false);
+            expect(controller.checkRating).toEqual('disabled');
         });
     });
 

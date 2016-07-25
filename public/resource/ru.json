@@ -27,5 +27,7 @@
   "ERROR_SIGN": "Ошибочные данные",
   "ERROR": "Поля ввода пустые",
   "ERROR_REGISTRED": "данное имя пользователя уже существует",
-  "DELETE_ARTICLE": "Удалить статью"
+  "DELETE_ARTICLE": "Удалить статью",
+  "INPUT_CONTENT_ARTICLE": "Введите содержание статьи",
+  "MORE_ARTICLES": "Больше статей"
 }

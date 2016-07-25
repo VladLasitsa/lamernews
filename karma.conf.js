@@ -10,35 +10,15 @@ module.exports = function(config) {
         frameworks: ['jasmine'],
 
         files: [
-            // "./test/front-end/test.config.js",
+
             './node_modules/angular/angular.js',
             './node_modules/angular-ui-router/release/angular-ui-router.js',
             './node_modules/angular-translate/dist/angular-translate.min.js',
             './public/scripts/libs/angular-translate-loader-static-files.js',
             './public/scripts/libs/angular-translate-storage-local.min.js',
-
-            // './public/scripts/libs/*.*.js',
             './node_modules/angular-mocks/angular-mocks.js',
             './public/dist/bundle.js',
-            "./test/front-end/**/*.spec.js"
-            //  {
-            //     pattern: 'node_modules/angular/angular.js',
-            //     included: false
-            // }, {
-            //     pattern: 'node_modules/angular-ui-router/release/angular-ui-router.js',
-            //     included: false
-            // }, {
-            //     pattern: 'node_modules/angular-mocks/angular-mocks.js',
-            //     included: false
-            // }, {
-            //     pattern: 'public/dist/bundle.js',
-            //     included: false
-            // }, {
-            //     pattern: "test/front-end/**/*.spec.js",
-            //     included: false
-            // }
-
-
+            "./public/scripts/**/*.spec.js"
 
         ],
 
@@ -46,7 +26,6 @@ module.exports = function(config) {
 
         preprocessors: {
             'public/dist/bundle.js': ['webpack'],
-            // 'test/front-end/**/*.spec.js': ['webpack']
         },
 
         webpack: {

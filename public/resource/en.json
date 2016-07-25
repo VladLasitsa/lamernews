@@ -27,5 +27,7 @@
   "ERROR": "Input field empty",
   "ERROR_SIGN": "Wrong data",
   "ERROR_REGISTRED": "This is username alredy exists",
-  "DELETE_ARTICLE": "Delete article"
+  "DELETE_ARTICLE": "Delete article",
+  "INPUT_CONTENT_ARTICLE": "Input content article",
+  "MORE_ARTICLES": "More articles"
 }

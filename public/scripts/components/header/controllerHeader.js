@@ -26,7 +26,7 @@ module.exports = function($rootScope, $translate, $scope, usersService, $users) 
                 usersService.setUser('');
                 usersService.logged(false);
                 this.user = usersService.isLogged();
-                $rootScope.$broadcast('logout');
+                $rootScope.$emit('logout');
         }));
     };
 };

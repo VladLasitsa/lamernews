@@ -27,7 +27,7 @@ describe('testing UsersService', function() {
     });
 
     describe('setUser', function() {
-        it('setUser should return user name', function() {
+        it('setUser should return user name equal set "dima"', function() {
             var setUsername = "dima";
             usersService.setUser(setUsername);
             var username = usersService.getUser();
@@ -37,7 +37,7 @@ describe('testing UsersService', function() {
     });
 
     describe('isLogged', function() {
-        it('setUser should return user name', function() {
+        it('setUser should return true if user is set', function() {
             var bool = true;
             usersService.logged(bool);
             var log = usersService.isLogged();

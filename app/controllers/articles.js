@@ -1,5 +1,6 @@
 var Article = require('../models/Article.js');
 var User = require('../models/User.js');
+var inf = 1000000;
 
 module.exports = function(app) {
     'use strict';
@@ -8,7 +9,7 @@ module.exports = function(app) {
         if (req.isAuthenticated()) {
             return next();
         } else {
-            res.send({
+            res.status(203).send({
                 status: "ERROR",
                 description: "User is not authentificated"
             });
@@ -16,21 +17,64 @@ module.exports = function(app) {
     }
 
     function incrementCountComments(username) {
-        User.getUser(username, true, function(user) {
-            User.updateUser(user.email, user.commentCount + 1, user.articleCount, username,
-                function() {
+      User.getUser(username, true, function(user) {
+          User.updateUser(user.email, user.commentCount + 1, user.articleCount, username,
+              function() {
 
-                });
+              });
+      });
+    }
+
+    function parseResponseDataBase(data) {
+        var article = {};
+        article.authorusername = data[0].authorusername;
+        article.title = data[0].title;
+        article.content = data[0].content;
+        article.date = data[0].date;
+        article.rating = data[0].rating;
+        article.idArticle = data[0].idArticle;
+        article.comments = [];
+        article.usersNameRating = [];
+        var idComments = [];
+        data.forEach(function(item, index) {
+            var comment = {};
+            if (idComments.indexOf(item.idComment) === -1 && item.idComment) {
+                comment.username = item.username;
+                comment.text = item.text;
+                comment.link = item.link;
+                comment.date = item.datecomment;
+                article.comments.push(comment);
+                idComments.push(item.idComment);
+            }
+            if (article.usersNameRating.indexOf(item.namerating) === -1 && item.namerating) {
+                article.usersNameRating.push(item.namerating);
+            }
         });
+        return article;
     }
 
     function incrementCountArticles(username) {
         User.getUser(username, true, function(user) {
             User.updateUser(user.email, user.commentCount, user.articleCount + 1, username,
                 function() {
-
                 });
         });
+    }
+
+    function decrementCountArticle(username) {
+      User.getUser(username, true, function(user) {
+          User.updateUser(user.email, user.commentCount, user.articleCount - 1, username,
+              function() {
+              });
+      });
+    }
+
+    function decrementCountComment(username) {
+      User.getUser(username, true, function(user) {
+          User.updateUser(user.email, user.commentCount - 1, user.articleCount, username,
+              function() {
+              });
+      });
     }
 
     app.get('/api/articles/:startIndex/:count', function(req, res) {
@@ -49,11 +93,10 @@ module.exports = function(app) {
 
     app.get('/api/articles/:id', function(req, res) {
         if (req.params.id === 'random') {
-            Article.getArticles('date', 0, 1000, function(articles) {
-                var randomNumber = Math.floor(Math.random() * (articles.length) + 2);
-                Article.getArticle(randomNumber, function(article, comments, userName) {
-                    article.comments = comments;
-                    article.userName = userName;
+            Article.getArticles('date', inf, 0, function(articles) {
+                var randomNumber = Math.floor(Math.random() * (articles.length));
+                Article.getArticle(articles[randomNumber].idArticle, function(data) {
+                    var article = parseResponseDataBase(data);
                     var response = {
                         status: 'OK',
                         article: article
@@ -63,9 +106,8 @@ module.exports = function(app) {
             })
 
         } else {
-            Article.getArticle(req.params.id, function(article, comments, userName) {
-                article.comments = comments;
-                article.userName = userName;
+            Article.getArticle(req.params.id, function(data) {
+                var article = parseResponseDataBase(data);
                 var response = {
                     status: 'OK',
                     article: article
@@ -80,14 +122,12 @@ module.exports = function(app) {
 
     app.post('/api/articles', isLogged, function(req, res) {
         var newArticle = {};
-        var date = Date.now();
 
         newArticle.authorusername = req.user.username;
         newArticle.title = req.body.title;
-        newArticle.link = '';
         newArticle.rating = 0;
-        newArticle.date = date.toString();
-
+        newArticle.date = new Date();
+        newArticle.content = req.body.content || '';
 
         Article.createArticle(newArticle, function(article) {
             incrementCountArticles(req.user.username);
@@ -102,28 +142,17 @@ module.exports = function(app) {
 
     app.put('/api/articles/:id', isLogged, function(req, res) {
         Article.getArticle(req.params.id, function(article) {
-            var rating = +req.body.rating || article.rating;
-            if (typeof req.body.usersRating !== 'undefined') {
-                Article.usersRating(req.body.usersRating, req.params.id, function() {
-
-                });
-            }
-
-            if (typeof req.body.comment !== 'undefined') {
-                req.body.comment.username = req.user.username;
-                req.body.comment.date = new Date();
-                // article.comments.push(req.body.comment);
-                Article.createComment(req.body.comment, req.params.id, function() {
-                    incrementCountComments(req.user.username);
-                      update();
-                });
+            var rating;
+            if (typeof req.body.rating !== 'undefined') {
+                rating = +req.body.rating;
+            } else {
+                rating = article[0].rating;
             }
 
             var update = function() {
                 Article.updateArticle(rating, req.params.id, function() {
-                    Article.getArticle(req.params.id, function(article, comments, userName) {
-                        article.comments = comments;
-                        article.userName = userName;
+                    Article.getArticle(req.params.id, function(data) {
+                        var article = parseResponseDataBase(data);
                         var response = {
                             status: 'OK',
                             article: article
@@ -134,19 +163,37 @@ module.exports = function(app) {
                 });
             }
 
-            update();
+            if (typeof req.body.usersRating !== 'undefined') {
+                Article.usersRating(req.body.usersRating, req.params.id, function() {});
+            }
+
+            if (typeof req.body.comment !== 'undefined') {
+                req.body.comment.username = req.user.username;
+                req.body.comment.date = new Date();
+                Article.createComment(req.body.comment, req.params.id, function() {
+                    incrementCountComments(req.user.username);
+                    update();
+                });
+            } else {
+                update();
+            }
+
         });
     });
 
     app.delete('/api/articles/:id', isLogged, function(req, res) {
-
+      Article.getArticle(req.params.id, function(data){
+        var article = parseResponseDataBase(data);
+        decrementCountArticle(article.authorusername);
+        article.comments.forEach(function (item, index) {
+          decrementCountComment(item.username);
+        });
         Article.deleteArticle(req.params.id, function() {
             var response = {
                 status: 'OK'
             }
             return res.json(response);
         });
-
-
+      });
     });
 }

@@ -2,7 +2,7 @@ module.exports = function(app) {
     "use strict";
     var ControllerSignIn = require('./controllerSignIn');
     var signInTemplate = require('./signIn');
-    var signInStyle = require('../../../styles/signIn.less');
+    var signInStyle = require('./signIn.less');
 
     app.controller('controllerSignIn', ControllerSignIn);
 

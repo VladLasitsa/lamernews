@@ -1,4 +1,4 @@
-<div class="article">
+<div class="article width-full">
     <div class="del"  ng-show="articleCntr.checkArticleOwner">
         <a class="delete-button" ng-click="articleCntr.remove()">
       {{'DELETE_ARTICLE' | translate}}</a>
@@ -13,17 +13,21 @@
               {{articleCntr.articleItem.authorusername}}</a></div>
         <div class="begin">{{articleCntr.articleItem.date}}</div>
         <div>
-            <a ng-click="articleCntr.incrementRating()" ng-show="articleCntr.checkRating">
+            <a class="{{articleCntr.checkRating}}" ng-click="articleCntr.incrementRating()">
                 <span class="fa fa-thumbs-o-up up"></span></a>
             {{articleCntr.articleItem.rating}}</div>
 
     </div>
 </div>
 
-<div class="title-comment">{{'COMMENTS' | translate}}</div>
+<div class="article-content">
+  {{articleCntr.articleItem.content}}
+</div>
+
+<div class="title-comment" ng-show="articleCntr.showComments">{{'COMMENTS' | translate}}</div>
 <div class="comment" ng-repeat="comment in articleCntr.articleItem.comments">
     <div class="author-comment">
-        {{comment.username}}
+        <a href="#/users/{{comment.username}}">{{comment.username}}</a>
     </div>
     <div class="date-comment">
         {{comment.date}}

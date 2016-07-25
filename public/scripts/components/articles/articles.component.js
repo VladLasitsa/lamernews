@@ -2,7 +2,7 @@ module.exports = function(app) {
     "use strict";
     var ControllerArticles = require('./controllerArticles');
     var articlesTemplate = require('./articles');
-    var articlesStyle = require('../../../styles/articles.less');
+    var articlesStyle = require('../articleItem/articles.less');
 
     app.controller('controllerArticles', ControllerArticles);
 
@@ -14,4 +14,4 @@ module.exports = function(app) {
     };
 
     app.component('articles', config);
-}
+};

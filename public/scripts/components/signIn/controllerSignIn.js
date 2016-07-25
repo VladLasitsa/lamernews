@@ -21,6 +21,7 @@ module.exports = function($scope, $users, $rootScope, usersService) {
                     usersService.setUser(data.user.username);
                     usersService.logged(true);
                     this.show = false;
+                    this.user = {};
                   }
                   else {
                       this.errorSign = true;
@@ -51,6 +52,7 @@ module.exports = function($scope, $users, $rootScope, usersService) {
                     usersService.setUser(data.user.username);
                     usersService.logged(true);
                     this.show = false;
+                    this.user = {};
                   }
                   else {
                     this.error = false;

@@ -3,7 +3,7 @@
     var ArticlesFactory = require('./factories/articles.Factory');
     var UsersFactory = require('./factories/users.Factory');
     var UsersService = require('./services/users.Service');
-     var mainStyle = require('../styles/main.less');
+    var mainStyle = require('../styles/main.less');
 
     var app = angular.module('app', ['ui.router', 'pascalprecht.translate']);
     app.config(function($stateProvider, $urlRouterProvider, $translateProvider) {        
@@ -19,7 +19,8 @@
                 'signin': {
                     template: '<signin></signin>'
                 }
-            }, 
+            },
+             
             css: mainStyle  
         }); 
         $stateProvider.state('articleItem', {            
@@ -34,7 +35,8 @@
                 'signin': {
                     template: '<signin></signin>'
                 }
-            }, 
+            },
+             
             css: mainStyle    
         }); 
         $stateProvider.state('user', {            
@@ -45,8 +47,12 @@
                 },
                 'content': {
                     template: '<user></user>'
+                },
+                'signin': {
+                    template: '<signin></signin>'
                 }
-            }, 
+            },
+             
             css: mainStyle    
         }); 
         $translateProvider.useStaticFilesLoader({
@@ -67,6 +73,6 @@
     require('./components/header/header.component')(app);
     require('./components/user/user.component')(app);
     require('./components/signIn/signIn.component')(app);
-
+    var scroll = require('./scroll')(window);
 
 })();

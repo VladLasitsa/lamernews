@@ -2,7 +2,7 @@ module.exports = function(app) {
     "use strict";
     var ControllerHeader = require('./controllerHeader');
     var headerTemplate = require('./header');
-    var headerStyle = require('../../../styles/header.less');
+    var headerStyle = require('./header.less');
 
     app.controller('controllerHeader', ControllerHeader);
 
@@ -14,4 +14,4 @@ module.exports = function(app) {
     };
 
     app.component('header', config);
-}
+};

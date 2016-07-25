@@ -60,7 +60,7 @@ describe('testing controllerUser', function() {
 
 
     describe('updateUser', function() {
-        it('must be call userFactory.updateUser', function() {
+        it('if email is not null must be call userFactory.updateUser', function() {
 
             var $scope = $rootScope.$new();
             var controller = $controller('controllerUser', {
@@ -69,25 +69,67 @@ describe('testing controllerUser', function() {
                 $article: mockedArticlesFactory,
                 usersService: mockedUserService
             });
-
+            controller.email = 'vlad';
             controller.updateUser();
             expect(mockedUsersFactory.updateUser).toHaveBeenCalled();
         });
-    });
-
-    describe('createArticle', function() {
-        it('must be call articleFactory.createArticle', function() {
+        it('if email is null must be set error true', function() {
 
             var $scope = $rootScope.$new();
             var controller = $controller('controllerUser', {
                 $scope: $scope,
                 $users: mockedUsersFactory,
-                $articles: mockedArticlesFactory,
+                $article: mockedArticlesFactory,
                 usersService: mockedUserService
             });
-
-            controller.createArticle();
-            expect(mockedArticlesFactory.createArticle).toHaveBeenCalled();
+            controller.email = '';
+            controller.updateUser();
+            expect(controller.error).toBe(true);
         });
+    });
+
+    describe('createArticle', function() {
+        it('if title and content article is not null ' +
+            'must be call articleFactory.createArticle',
+            function() {
+
+                var $scope = $rootScope.$new();
+                var controller = $controller('controllerUser', {
+                    $scope: $scope,
+                    $users: mockedUsersFactory,
+                    $articles: mockedArticlesFactory,
+                    usersService: mockedUserService
+                });
+                controller.titleArticle = "vlad";
+                controller.contentArticle = "vlad";
+                controller.createArticle();
+                expect(mockedArticlesFactory.createArticle).toHaveBeenCalled();
+            });
+        it('if title or content article is null ' +
+            'must be set error is true',
+            function() {
+
+                var $scope = $rootScope.$new();
+                var controller = $controller('controllerUser', {
+                    $scope: $scope,
+                    $users: mockedUsersFactory,
+                    $articles: mockedArticlesFactory,
+                    usersService: mockedUserService
+                });
+                controller.titleArticle = "";
+                controller.contentArticle = "vlad";
+                controller.createArticle();
+                expect(controller.error).toBe(true);
+
+                controller.titleArticle = "";
+                controller.contentArticle = "";
+                controller.createArticle();
+                expect(controller.error).toBe(true);
+
+                controller.titleArticle = "vlad";
+                controller.contentArticle = "";
+                controller.createArticle();
+                expect(controller.error).toBe(true);
+            });
     });
 });

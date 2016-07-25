@@ -6,11 +6,9 @@
                 <div class="user-icon"></div>
             </div>
             <span>{{userCntr.user.username}}</span>
-            <a ng-show="userCntr.checkUser" class="signin-button update-button"
-              ng-click="userCntr.showUpdateBlock()">
+            <a ng-show="userCntr.checkUser" class="signin-button update-button" ng-click="userCntr.showUpdateBlock()">
         {{'EDIT' | translate}}</a>
-            <a ng-show="userCntr.checkUser" class="signin-button update-button"
-              ng-click="userCntr.showCreateArticleBlock()">
+            <a ng-show="userCntr.checkUser" class="signin-button update-button" ng-click="userCntr.showCreateArticleBlock()">
           {{'CREATE' | translate}}</a>
         </div>
         <div class="row-content">
@@ -42,28 +40,28 @@
             <div class="title-info text-info">
                 <label for="email">Email</label>
             </div>
-            <input ng-model="userCntr.email" type="text"
-              class="value-info text-info field-input"
-              placeholder="{{'INPUT_EMAIL' | translate}}" id="email">
+            <input ng-model="userCntr.email" type="text" class="value-info text-info field-input" placeholder="{{'INPUT_EMAIL' | translate}}" id="email">
         </div>
     </div>
 </div>
 <div class="update-profile" ng-show="userCntr.create">
     <div class="info-content">
         <div class="student-title">
-            <a class="signin-button cancel-button"
-              ng-click="userCntr.hideCreateArticleBlock()">{{'CANCEL' | translate}}</a>
-            <a class="signin-button update-button"
-              ng-click="userCntr.createArticle()">{{'CREATE'| translate}}</a>
+            <a class="signin-button cancel-button" ng-click="userCntr.hideCreateArticleBlock()">{{'CANCEL' | translate}}</a>
+            <a class="signin-button update-button" ng-click="userCntr.createArticle()">{{'CREATE'| translate}}</a>
 
         </div>
         <div class="row-content">
             <div class="title-info text-info">
                 <label for="email">{{'INPUT_TITLE_ARTICLE' | translate}}</label>
             </div>
-            <input ng-model="userCntr.titleArticle"
-              type="text" class="value-info text-info field-input"
+            <input ng-model="userCntr.titleArticle" type="text"
+              class="value-info text-info field-input"
               placeholder="{{'INPUT_TITLE_ARTICLE' | translate}}" id="email">
+            <div class="title-info text-info">
+                <label>{{'INPUT_CONTENT_ARTICLE' | translate}}</label>
+            </div>
+            <textarea class="content-article" ng-model="userCntr.contentArticle"></textarea>
         </div>
     </div>
 </div>

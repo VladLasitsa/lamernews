@@ -7,7 +7,10 @@ module.exports = function(app) {
         if (req.isAuthenticated()) {
             return next();
         } else {
-            res.redirect('/');
+          res.status(203).json({
+            status: "ERROR",
+            description: "User is not authentificated"
+          });
         }
     }
 

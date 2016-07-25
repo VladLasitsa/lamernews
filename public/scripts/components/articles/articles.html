@@ -13,18 +13,21 @@
     </div>
     <div class="row" ng-repeat="article in articlesCntr.articles">
         <div class="article">
-            <div class="article-name">{{article.title}}</div>
+            <div class="article-name"><a ng-href="#/articles/{{article.idArticle}}">
+              {{article.title}}</a></div>
             <div class="article-info">
-                <a ng-href="#/users/{{article.authorusername}}"
+                <div class="number-listeners">
+                  <a ng-href="#/users/{{article.authorusername}}"
                   class="number-listeners">{{article.authorusername}}</a>
+                </div>
                 <div class="begin">{{article.date}}</div>
             </div>
-            <div class="registration">
+            <!-- <div class="registration">
                 <a ng-href="#/articles/{{article.idArticle}}">{{'SHOW' | translate}}</a>
-            </div>
+            </div> -->
         </div>
     </div>
 </div>
-<div class="more-courses">
-    <a href="" ng-click="articlesCntr.getMoreArticle()">Больше статей</a>
+<div ng-show="articlesCntr.showViewMore" class="more-courses">
+    <a href="" ng-click="articlesCntr.getMoreArticle()">{{MORE_ARTICLES | translate}}</a>
 </div>
