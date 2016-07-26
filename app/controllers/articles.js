@@ -1,5 +1,6 @@
 var Article = require('../models/Article.js');
 var User = require('../models/User.js');
+var errorHandler = require('./errorHandler');
 var inf = 1000000;
 
 module.exports = function(app) {
@@ -9,20 +10,18 @@ module.exports = function(app) {
         if (req.isAuthenticated()) {
             return next();
         } else {
-            res.status(203).send({
+            res.status(401).send({
                 status: "ERROR",
                 description: "User is not authentificated"
             });
         }
     }
 
-    function incrementCountComments(username) {
-      User.getUser(username, true, function(user) {
-          User.updateUser(user.email, user.commentCount + 1, user.articleCount, username,
-              function() {
-
-              });
-      });
+    function incrementCountComments(username, res) {
+        User.getUser(username, true, function(user) {
+            User.updateUser(user.email, user.commentCount + 1, user.articleCount, username,
+                function() {}, errorHandler(res));
+        }, errorHandler(res));
     }
 
     function parseResponseDataBase(data) {
@@ -53,28 +52,25 @@ module.exports = function(app) {
         return article;
     }
 
-    function incrementCountArticles(username) {
+    function incrementCountArticles(username, res) {
         User.getUser(username, true, function(user) {
             User.updateUser(user.email, user.commentCount, user.articleCount + 1, username,
-                function() {
-                });
-        });
+                function() {}, errorHandler(res));
+        }, errorHandler(res));
     }
 
-    function decrementCountArticle(username) {
-      User.getUser(username, true, function(user) {
-          User.updateUser(user.email, user.commentCount, user.articleCount - 1, username,
-              function() {
-              });
-      });
+    function decrementCountArticle(username, res) {
+        User.getUser(username, true, function(user) {
+            User.updateUser(user.email, user.commentCount, user.articleCount - 1, username,
+                function() {}, errorHandler(res));
+        }, errorHandler(res));
     }
 
-    function decrementCountComment(username) {
-      User.getUser(username, true, function(user) {
-          User.updateUser(user.email, user.commentCount - 1, user.articleCount, username,
-              function() {
-              });
-      });
+    function decrementCountComment(username, res) {
+        User.getUser(username, true, function(user) {
+            User.updateUser(user.email, user.commentCount - 1, user.articleCount, username,
+                function() {}, errorHandler(res));
+        }, errorHandler(res));
     }
 
     app.get('/api/articles/:startIndex/:count', function(req, res) {
@@ -87,7 +83,7 @@ module.exports = function(app) {
                 articles: articles
             }
             res.json(response);
-        });
+        }, errorHandler(res));
 
     });
 
@@ -102,8 +98,8 @@ module.exports = function(app) {
                         article: article
                     }
                     res.json(response);
-                });
-            })
+                }, errorHandler(res));
+            }, errorHandler(res))
 
         } else {
             Article.getArticle(req.params.id, function(data) {
@@ -113,7 +109,7 @@ module.exports = function(app) {
                     article: article
                 }
                 res.json(response);
-            });
+            }, errorHandler(res));
 
         }
 
@@ -130,13 +126,13 @@ module.exports = function(app) {
         newArticle.content = req.body.content || '';
 
         Article.createArticle(newArticle, function(article) {
-            incrementCountArticles(req.user.username);
+            incrementCountArticles(req.user.username, res);
             var response = {
                 status: 'OK',
                 article: article
             }
             return res.json(response);
-        });
+        }, errorHandler(res));
 
     });
 
@@ -158,22 +154,22 @@ module.exports = function(app) {
                             article: article
                         }
                         return res.json(response);
-                    });
+                    }, errorHandler(res));
 
-                });
+                }, errorHandler(res));
             }
 
             if (typeof req.body.usersRating !== 'undefined') {
-                Article.usersRating(req.body.usersRating, req.params.id, function() {});
+                Article.usersRating(req.body.usersRating, req.params.id, function() {}, errorHandler(res));
             }
 
             if (typeof req.body.comment !== 'undefined') {
                 req.body.comment.username = req.user.username;
                 req.body.comment.date = new Date();
                 Article.createComment(req.body.comment, req.params.id, function() {
-                    incrementCountComments(req.user.username);
+                    incrementCountComments(req.user.username, res);
                     update();
-                });
+                }, errorHandler(res));
             } else {
                 update();
             }
@@ -182,18 +178,19 @@ module.exports = function(app) {
     });
 
     app.delete('/api/articles/:id', isLogged, function(req, res) {
-      Article.getArticle(req.params.id, function(data){
-        var article = parseResponseDataBase(data);
-        decrementCountArticle(article.authorusername);
-        article.comments.forEach(function (item, index) {
-          decrementCountComment(item.username);
-        });
+        Article.getArticle(req.params.id, function(data) {
+            var article = parseResponseDataBase(data);
+            decrementCountArticle(article.authorusername, res);
+            article.comments.forEach(function(item, index) {
+                decrementCountComment(item.username, res);
+            });
+        }, errorHandler(res));
+
         Article.deleteArticle(req.params.id, function() {
             var response = {
                 status: 'OK'
             }
             return res.json(response);
-        });
-      });
+        }, errorHandler(res));
     });
 }

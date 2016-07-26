@@ -3,16 +3,14 @@ module.exports = function(window) {
     $(document).ready(function() {
         var top_show = 100;
         var delay = 800;
-        var height = $(document).height();
-
         $(window).scroll(function() {
-            console.log(height);
+            console.log($(document).height());
             if ($(this).scrollTop() > top_show) {
                 $('#scrollup').fadeIn();
             } else {
                 $('#scrollup').fadeOut();
             }
-            if ($(window).scrollTop() >= height - "999") {
+            if ($(window).scrollTop() >= $(document).height() - "667") {
                 $("#scrolldown").fadeOut();
             } else {
                 $("#scrolldown").fadeIn();

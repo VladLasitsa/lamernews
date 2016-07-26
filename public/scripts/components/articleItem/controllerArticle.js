@@ -1,3 +1,4 @@
+ var moment = require('moment');
 module.exports = function($scope, $rootScope, $location, $articles, usersService) {
     'use strict';
     this.articleItem = {};
@@ -50,18 +51,11 @@ module.exports = function($scope, $rootScope, $location, $articles, usersService
         }));
     };
 
-    this.date = function(data) {
-        data.date = data.date.substring(0,
-                data.date.indexOf('T')) + ' ' +
-            data.date.substring(data.date.indexOf('T') + 1,
-                data.date.indexOf('.'));
-    };
-
     this.dateComment = function(article) {
-        this.date(article);
+      article.date = moment(article.date).format('MM.DD.YY HH:mm');
         if (article.comments.length !== 0) {
             article.comments.forEach(angular.bind(this, function(item, index) {
-                this.date(item);
+                item.date = moment(item.date).format('MM.DD.YY HH:mm');
             }));
         } else {
             return;

@@ -102,9 +102,6 @@ describe('testing controllerSignIn', function() {
             expect(mockedUsersFactory.createUser).toHaveBeenCalled();
         });
         it('if login or password is empty must be error in true', function() {
-
-
-
             var $scope = $rootScope.$new();
             var controller = $controller('controllerSignIn', {
                 $scope: $scope,

@@ -6,11 +6,11 @@ var pgp = require('pg-promise')(options);
 
 module.exports = {
 
-    wrapperInPostgre: function(promisePostgre, callback) {
+    wrapperInPostgre: function(promisePostgre, callback, errorCallback) {
         promisePostgre.then(function(data) {
             callback(data);
         }).catch(function(err) {
-            console.log(err);
+            errorCallback(err);
         }).finally(function() {
             pgp.end();
         });

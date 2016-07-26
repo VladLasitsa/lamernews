@@ -8,6 +8,7 @@ module.exports = function($scope, $rootScope, $users, $location, $articles, user
     this.update = false;
     this.create = false;
     this.checkUser = false;
+    this.checkOwner = false;
     this.contentArticle = '';
     this.error = false;
     var path = $location.path();
@@ -19,13 +20,17 @@ module.exports = function($scope, $rootScope, $users, $location, $articles, user
 
     $rootScope.$on('logout', angular.bind(this, function() {
         this.checkUser = false;
+        this.checkOwner = false;
     }));
 
     this.init = function() {
         $users.getUser(username, angular.bind(this, function(data) {
             this.user = data.user;
-            if (this.user.username === usersService.getUser()) {
+            if (usersService.isLogged()) {
                 this.checkUser = true;
+            }
+            if (this.user.username === usersService.getUser()) {
+                this.checkOwner = true;
             }
         }));
     };

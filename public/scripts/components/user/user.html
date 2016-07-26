@@ -6,9 +6,9 @@
                 <div class="user-icon"></div>
             </div>
             <span>{{userCntr.user.username}}</span>
-            <a ng-show="userCntr.checkUser" class="signin-button update-button" ng-click="userCntr.showUpdateBlock()">
+            <a ng-show="userCntr.checkOwner" class="signin-button update-button" ng-click="userCntr.showUpdateBlock()">
         {{'EDIT' | translate}}</a>
-            <a ng-show="userCntr.checkUser" class="signin-button update-button" ng-click="userCntr.showCreateArticleBlock()">
+            <a ng-show="userCntr.checkOwner" class="signin-button update-button" ng-click="userCntr.showCreateArticleBlock()">
           {{'CREATE' | translate}}</a>
         </div>
         <div class="row-content">

@@ -1,4 +1,5 @@
 var User = require('../models/User.js');
+var errorHandler = require('./errorHandler');
 
 module.exports = function(app) {
     'use strict';
@@ -7,10 +8,10 @@ module.exports = function(app) {
         if (req.isAuthenticated()) {
             return next();
         } else {
-          res.status(203).json({
-            status: "ERROR",
-            description: "User is not authentificated"
-          });
+            res.status(401).json({
+                status: "ERROR",
+                description: "User is not authentificated"
+            });
         }
     }
 
@@ -22,7 +23,7 @@ module.exports = function(app) {
                     status: 'OK',
                     user: user
                 });
-            });
+            }, errorHandler(res));
 
         } else {
             User.getUser(name, false, function(user) {
@@ -30,7 +31,7 @@ module.exports = function(app) {
                     status: 'OK',
                     user: user
                 });
-            });
+            }, errorHandler(res));
 
         }
 
@@ -40,7 +41,7 @@ module.exports = function(app) {
         var name = req.params.username;
 
         User.getUser(name, true, function(user) {
-          console.log(req.body);
+            console.log(req.body);
             var email = req.body.email || user.email;
             var commentCount = req.body.commentCount || user.commentCount;
             var articleCount = req.body.articleCount || user.articleCount;
@@ -52,22 +53,20 @@ module.exports = function(app) {
                             status: 'OK',
                             user: user
                         });
-                    });
-
-                });
-
+                    }, errorHandler(res));
+                }, errorHandler(res));
             }
-        });
+        }, errorHandler(res));
     });
 
     app.delete('/api/users/:username', isLogged, function(req, res) {
         var name = req.params.username;
         if (req.user.username === name) {
-            var user = User.deleteUser(name);
-
-            return res.json({
-                status: 'OK'
-            });
+            var user = User.deleteUser(name, function() {
+                return res.json({
+                    status: 'OK'
+                });
+            }, errorHandler(res));
         }
     });
 }

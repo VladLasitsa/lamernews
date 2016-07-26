@@ -1,7 +1,7 @@
 
 <div>
     <div>
-        <span class="sort-title">{{'SORT' | translate}}</span>
+        <!-- <span class="sort-title">{{'SORT' | translate}}</span> -->
         <div>
         <button class="signin-button sort-button"
           ng-click="articlesCntr.sort('date')">{{'DATE' | translate}}</button>
@@ -22,12 +22,9 @@
                 </div>
                 <div class="begin">{{article.date}}</div>
             </div>
-            <!-- <div class="registration">
-                <a ng-href="#/articles/{{article.idArticle}}">{{'SHOW' | translate}}</a>
-            </div> -->
         </div>
     </div>
 </div>
 <div ng-show="articlesCntr.showViewMore" class="more-courses">
-    <a href="" ng-click="articlesCntr.getMoreArticle()">{{MORE_ARTICLES | translate}}</a>
+    <a href="" ng-click="articlesCntr.getMoreArticle()">{{'MORE_ARTICLES' | translate}}</a>
 </div>

@@ -6,7 +6,7 @@ module.exports = function(passport, app) {
         if (req.isAuthenticated()) {
             return next();
         } else {
-            res.status(203).json({
+            res.status(401).json({
               status: "ERROR",
               description: "User is not authentificated"
             })
@@ -19,7 +19,7 @@ module.exports = function(passport, app) {
     });
 
     app.get('/api/register', function(req, res) {
-        return res.status(500).json({
+        return res.status(401).json({
             status: "ERROR",
             description: "This is login exists"
         });
@@ -42,7 +42,7 @@ module.exports = function(passport, app) {
     }));
 
     app.get('/api/signup', function(req, res) {
-        return res.status(500).json({
+        return res.status(401).json({
             status: "ERROR",
             description: "Wrong data"
         });

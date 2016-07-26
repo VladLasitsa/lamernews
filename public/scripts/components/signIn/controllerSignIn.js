@@ -11,14 +11,17 @@ module.exports = function($scope, $users, $rootScope, usersService) {
 
     this.hide = function() {
         this.show = false;
+        this.error = false;
+        this.errorSign = false;
+        this.errorRegistred = false;
     };
 
     this.signIn = function() {
         if (this.user.login !== '' && this.user.password !== '') {
             var req = 'username='+this.user.login+'&password='+this.user.password;
-            $users.signIn(req, angular.bind(this, function(data) {
-                  if(angular.equals(data.status, 'OK')){
-                    usersService.setUser(data.user.username);
+            $users.signIn(req, angular.bind(this, function(res) {
+                  if(angular.equals(res.data.status, 'OK')){
+                    usersService.setUser(res.data.user.username);
                     usersService.logged(true);
                     this.show = false;
                     this.user = {};
@@ -47,9 +50,9 @@ module.exports = function($scope, $users, $rootScope, usersService) {
         var password = this.user.password;
         if (!angular.equals(login, '') && !angular.equals(password, '')) {
             var req = 'username='+this.user.login+'&password='+this.user.password;
-            $users.createUser(req, angular.bind(this, function(data) {
-                  if(angular.equals(data.status, 'OK')){
-                    usersService.setUser(data.user.username);
+            $users.createUser(req, angular.bind(this, function(res) {
+                  if(angular.equals(res.data.status, 'OK')){
+                    usersService.setUser(res.data.user.username);
                     usersService.logged(true);
                     this.show = false;
                     this.user = {};
